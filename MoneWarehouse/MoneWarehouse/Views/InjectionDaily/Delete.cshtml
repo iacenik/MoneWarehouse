@@ -1,0 +1,65 @@
+﻿@model EntityLayer.Entities.InjectionDaily
+
+@{
+    ViewData["Title"] = "Günlük Üretim Kaydını Sil";
+}
+
+<h1>Günlük Üretim Kaydını Sil</h1>
+
+<h3>Bu kaydı silmek istediğinize emin misiniz?</h3>
+<div>
+    <h4>Günlük Üretim Bilgileri</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Quantity)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+        <!-- Diğer InjectionDaily özellikleri burada listelenecek -->
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InjectionStockId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InjectionStockId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EmployeeId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EmployeeId)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Sil</button>
+        <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#injectionDailyDataTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json'
+                },
+                "order": [[1, "desc"]],
+                "pageLength": 25
+            });
+            $('[data-toggle="tooltip"]').tooltip();
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

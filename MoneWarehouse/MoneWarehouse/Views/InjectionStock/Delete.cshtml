@@ -1,0 +1,87 @@
+﻿@model EntityLayer.Entities.InjectionStock
+
+@{
+    ViewData["Title"] = "Enjeksiyon Stoğu Sil";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-primary">Enjeksiyon Stoğu Silme Onayı</h4>
+            <a asp-action="Index" class="btn btn-secondary rounded-pill px-3">
+                <i class="fas fa-arrow-left me-1"></i> Listeye Dön
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i> Bu stok kaydını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+            </div>
+
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card border-light mb-3">
+                        <div class="card-header bg-light text-dark">
+                            <h5 class="mb-0">Stok Bilgileri</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Stok Kodu:</div>
+                                <div class="col-md-8 font-weight-bold">@Model.Code</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Stok Adı:</div>
+                                <div class="col-md-8 font-weight-bold">@Model.Name</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Miktar:</div>
+                                <div class="col-md-8 font-weight-bold">@Model.Quantity</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Durum:</div>
+                                <div class="col-md-8">
+                                    @if (Model.Quantity <= 5)
+                                    {
+                                        <span class="badge bg-danger">Kritik Seviye</span>
+                                    }
+                                    else if (Model.Quantity <= 20)
+                                    {
+                                        <span class="badge bg-warning text-dark">Düşük Stok</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Yeterli</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" class="mt-4 text-center">
+                        <input type="hidden" asp-for="Id" />
+                        <button type="submit" class="btn btn-danger btn-lg px-5">
+                            <i class="fas fa-trash-alt me-1"></i> Stok Kaydını Sil
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-5 ms-2">
+                            <i class="fas fa-times-circle me-1"></i> İptal
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

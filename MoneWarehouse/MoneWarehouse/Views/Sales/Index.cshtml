@@ -1,0 +1,116 @@
+﻿@model IEnumerable<EntityLayer.Entities.Sales>
+
+@{
+    ViewData["Title"] = "Satışlar";
+}
+
+<div class="container-fluid">
+    <h2>Satışlar</h2>
+
+    <div class="mb-3">
+        <a asp-action="Create" class="btn btn-primary">Yeni Satış</a>
+        <a asp-action="Reports" class="btn btn-info">Raporlar</a>
+        <div class="btn-group ms-2">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                Filtreleme Seçenekleri
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" asp-action="ByDateRange">Tarih Aralığına Göre</a>
+                <a class="dropdown-item" asp-action="ByStatus">Duruma Göre</a>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5>
+                @if (ViewBag.ClientName != null)
+                {
+                    <span>@ViewBag.ClientName Müşterisine Ait Satışlar</span>
+                }
+                else if (ViewBag.EmployeeName != null)
+                {
+                    <span>@ViewBag.EmployeeName Tarafından Yapılan Satışlar</span>
+                }
+                else if (ViewBag.Status != null)
+                {
+                    <span>@ViewBag.Status Durumundaki Satışlar</span>
+                }
+                else if (ViewBag.StartDate != null && ViewBag.EndDate != null)
+                {
+                    <span>@ViewBag.StartDate - @ViewBag.EndDate Tarihleri Arasındaki Satışlar</span>
+                }
+                else
+                {
+                    <span>Tüm Satışlar</span>
+                }
+            </h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Satış No</th>
+                                <th>Müşteri</th>
+                                <th>Satış Temsilcisi</th>
+                                <th>Tarih</th>
+                                <th>Toplam Tutar</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@(item.Client?.CompanyName ?? "-")</td>
+                                    <td>@(item.Employee?.FirstName + " " + item.Employee?.LastName ?? "-")</td>
+                                    <td>@item.SalesDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.TotalAmount.ToString("N2") ₺</td>
+                                    <td>
+                                        <span class="badge bg-@(item.Status == "Completed" ? "success" :
+                                              item.Status == "Processing" ? "warning" :
+                                              item.Status == "Cancelled" ? "danger" : "info")">
+                                            @item.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detay</a>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Düzenle</a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Sil</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    Satış kaydı bulunamadı.
+                </div>
+            }
+        </div>
+    </div>
+</div>

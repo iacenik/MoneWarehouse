@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Formül Ara";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">İsme Göre Formül Ara</h6>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Listeye Dön
+            </a>
+        </div>
+        <div class="card-body">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="p-4">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-search text-primary fa-3x mb-3"></i>
+                            <h4>Formül Arama</h4>
+                            <p class="text-muted">Formülü adına göre arayın</p>
+                        </div>
+                        <form asp-action="FindByName" method="post" class="user">
+                            @if (!ViewContext.ModelState.IsValid)
+                            {
+                                <div class="alert alert-danger">
+                                    <div asp-validation-summary="All" class="text-danger"></div>
+                                </div>
+                            }
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-user" id="name" name="name" placeholder="Formül adını giriniz..." required>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-user btn-block">
+                                    <i class="fas fa-search"></i> Ara
+                                </button>
+                            </div>
+                        </form>
+                        <hr>
+                        <div class="text-center">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> Formül adını tam olarak yazınız.
+                            </div>
+                            <a asp-action="Index" class="btn btn-secondary btn-user btn-block">
+                                <i class="fas fa-list"></i> Tüm Formüller
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Hızlı Erişim</h6>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-light">
+                <p class="mb-0">Sistemde bulunan bazı popüler formüllere hızlı erişim sağlayabilirsiniz.</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">PVC Formülü</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">PVC-001</div>
+                                </div>
+                                <div class="col-auto">
+                                    <a href="#" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-search"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">PU Enjeksiyon</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">PU-002</div>
+                                </div>
+                                <div class="col-auto">
+                                    <a href="#" class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-search"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Kauçuk Karışım</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">RB-005</div>
+                                </div>
+                                <div class="col-auto">
+                                    <a href="#" class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-search"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

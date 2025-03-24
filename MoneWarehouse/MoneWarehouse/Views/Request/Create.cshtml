@@ -1,0 +1,168 @@
+﻿@model EntityLayer.Entities.Request
+
+@{
+    ViewData["Title"] = "Yeni Talep Oluştur";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center py-3">
+                    <h3 class="m-0 font-weight-bold">Yeni Talep Oluştur</h3>
+                    <a asp-action="Index" class="btn btn-light">
+                        <i class="fas fa-arrow-left me-1"></i> Listeye Dön
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" class="row g-3 needs-validation" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="RequestNumber" class="control-label">Talep Numarası</label>
+                                <input asp-for="RequestNumber" class="form-control" value="REQ-@DateTime.Now.ToString("yyyyMMdd")-@Guid.NewGuid().ToString().Substring(0, 4)" />
+                                <span asp-validation-for="RequestNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="EmployeeId" class="control-label">Çalışan</label>
+                                <select asp-for="EmployeeId" class="form-select" required>
+                                    <option value="">-- Çalışan Seçin --</option>
+                                    @foreach (var employee in ViewBag.Employees)
+                                    {
+                                        <option value="@employee.Id">@employee.FullName</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Status" class="control-label">Durum</label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="Pending">Bekliyor</option>
+                                    <option value="In Progress">Devam Ediyor</option>
+                                    <option value="Completed">Tamamlandı</option>
+                                    <option value="Cancelled">İptal Edildi</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Priority" class="control-label">Öncelik</label>
+                                <select asp-for="Priority" class="form-select">
+                                    <option value="Low">Düşük</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="High">Yüksek</option>
+                                    <option value="Urgent">Acil</option>
+                                </select>
+                                <span asp-validation-for="Priority" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="RequestType" class="control-label">Talep Türü</label>
+                                <select asp-for="RequestType" class="form-select">
+                                    <option value="">-- Tür Seçin --</option>
+                                    <option value="Hardware">Donanım</option>
+                                    <option value="Software">Yazılım</option>
+                                    <option value="Network">Ağ</option>
+                                    <option value="Service">Hizmet</option>
+                                    <option value="Other">Diğer</option>
+                                </select>
+                                <span asp-validation-for="RequestType" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="CreatedDate" class="control-label">Oluşturma Tarihi</label>
+                                <input asp-for="CreatedDate" class="form-control" type="datetime-local" />
+                                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="DueDate" class="control-label">Son Tarih</label>
+                                <input asp-for="DueDate" class="form-control" type="datetime-local" />
+                                <span asp-validation-for="DueDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="Description" class="control-label">Açıklama</label>
+                                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="AssignedTo" class="control-label">Atanan Kişi</label>
+                                <input asp-for="AssignedTo" class="form-control" />
+                                <span asp-validation-for="AssignedTo" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="UpdatedBy" class="control-label">Güncelleyen</label>
+                                <input asp-for="UpdatedBy" class="form-control" />
+                                <span asp-validation-for="UpdatedBy" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="Notes" class="control-label">Notlar</label>
+                                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="Notes" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mt-4 text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Kaydet
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary ms-2">
+                                <i class="fas fa-times me-1"></i> İptal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

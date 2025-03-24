@@ -1,0 +1,113 @@
+﻿@model EntityLayer.Entities.PlıntusDaily
+
+@{
+    ViewData["Title"] = "Günlük Üretim Kaydını Düzenle";
+    int oldQuantity = ViewBag.OldQuantity;
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-primary">Günlük Üretim Kaydını Düzenle</h4>
+            <a asp-action="Index" class="btn btn-secondary rounded-pill px-3">
+                <i class="fas fa-arrow-left me-1"></i> Listeye Dön
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" name="oldQuantity" value="@oldQuantity" />
+
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-exclamation-triangle me-1"></i> Bu kaydı düzenlemek, stok miktarlarında değişikliğe neden olabilir.
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Date" class="form-control" type="date" required />
+                            <label asp-for="Date">Tarih</label>
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <select asp-for="PlıntusStockId" class="form-select" required>
+                                        <option value="">Plıntus Stok Seçiniz</option>
+                                        @if (ViewBag.PlintusStocks != null)
+                                        {
+                                            @foreach (var stock in ViewBag.PlintusStocks)
+                                            {
+                                                <option value="@stock.Id">@stock.Name (@stock.Code)</option>
+                                            }
+                                        }
+                                    </select>
+                                    <label asp-for="PlıntusStockId">Plıntus Stok</label>
+                                    <span asp-validation-for="PlıntusStockId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <select asp-for="EmployeeId" class="form-select" required>
+                                        <option value="">Çalışan Seçiniz</option>
+                                        @if (ViewBag.Employees != null)
+                                        {
+                                            @foreach (var employee in ViewBag.Employees)
+                                            {
+                                                <option value="@employee.Id">@employee.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                    <label asp-for="EmployeeId">Çalışan</label>
+                                    <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Quantity" class="form-control" placeholder="Miktar" type="number" min="1" required />
+                            <label asp-for="Quantity">Miktar</label>
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                            <div class="form-text">Eski miktar: @oldQuantity</div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea asp-for="Description" class="form-control" placeholder="Açıklama" style="height: 100px"></textarea>
+                            <label asp-for="Description">Açıklama</label>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-save me-1"></i> Güncelle
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-5 ms-2">
+                                <i class="fas fa-times-circle me-1"></i> İptal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Form validation için Bootstrap validation kullanımı
+            $('form').submit(function (event) {
+                if (this.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                $(this).addClass('was-validated');
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

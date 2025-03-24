@@ -1,0 +1,125 @@
+﻿@{
+    ViewData["Title"] = "Ülkeye Göre Müşteri Filtrele";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Ülkeye Göre Müşteri Filtrele</h6>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Listeye Dön
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="p-4">
+                        <form asp-action="ClientsByCountry" method="get" class="user">
+                            <div class="form-group">
+                                <label for="country">Ülke Adı</label>
+                                <input type="text" class="form-control form-control-user" id="country" name="country" placeholder="Ülke adını giriniz..." required>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-user btn-block">
+                                    <i class="fas fa-search"></i> Filtrele
+                                </button>
+                            </div>
+                        </form>
+                        <hr>
+                        <div class="text-center">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> Bu sayfada ülkeye göre müşteri filtrelemesi yapabilirsiniz.
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <a asp-action="Index" class="btn btn-secondary btn-user btn-block">
+                                        <i class="fas fa-list"></i> Tüm Müşteriler
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a asp-action="Active" class="btn btn-success btn-user btn-block">
+                                        <i class="fas fa-check-circle"></i> Aktif Müşteriler
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Popüler Ülkeler</h6>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-md-3 mb-3">
+                    <a href="@Url.Action("ClientsByCountry", new { country = "Türkiye" })" class="btn btn-light btn-icon-split btn-block">
+                        <span class="icon text-gray-600">
+                            <i class="fas fa-flag"></i>
+                        </span>
+                        <span class="text">Türkiye</span>
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="@Url.Action("ClientsByCountry", new { country = "Almanya" })" class="btn btn-light btn-icon-split btn-block">
+                        <span class="icon text-gray-600">
+                            <i class="fas fa-flag"></i>
+                        </span>
+                        <span class="text">Almanya</span>
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="@Url.Action("ClientsByCountry", new { country = "Fransa" })" class="btn btn-light btn-icon-split btn-block">
+                        <span class="icon text-gray-600">
+                            <i class="fas fa-flag"></i>
+                        </span>
+                        <span class="text">Fransa</span>
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="@Url.Action("ClientsByCountry", new { country = "İngiltere" })" class="btn btn-light btn-icon-split btn-block">
+                        <span class="icon text-gray-600">
+                            <i class="fas fa-flag"></i>
+                        </span>
+                        <span class="text">İngiltere</span>
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="@Url.Action("ClientsByCountry", new { country = "İtalya" })" class="btn btn-light btn-icon-split btn-block">
+                        <span class="icon text-gray-600">
+                            <i class="fas fa-flag"></i>
+                        </span>
+                        <span class="text">İtalya</span>
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="@Url.Action("ClientsByCountry", new { country = "İspanya" })" class="btn btn-light btn-icon-split btn-block">
+                        <span class="icon text-gray-600">
+                            <i class="fas fa-flag"></i>
+                        </span>
+                        <span class="text">İspanya</span>
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="@Url.Action("ClientsByCountry", new { country = "Rusya" })" class="btn btn-light btn-icon-split btn-block">
+                        <span class="icon text-gray-600">
+                            <i class="fas fa-flag"></i>
+                        </span>
+                        <span class="text">Rusya</span>
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="@Url.Action("ClientsByCountry", new { country = "ABD" })" class="btn btn-light btn-icon-split btn-block">
+                        <span class="icon text-gray-600">
+                            <i class="fas fa-flag"></i>
+                        </span>
+                        <span class="text">ABD</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,96 @@
+﻿@{
+    ViewData["Title"] = "Toplam Stok Raporu";
+    int totalQuantity = ViewBag.TotalQuantity;
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-primary">Toplam Stok Raporu</h4>
+            <a asp-action="Index" class="btn btn-secondary rounded-pill px-3">
+                <i class="fas fa-arrow-left me-1"></i> Stok Listesine Dön
+            </a>
+        </div>
+        <div class="card-body">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-1"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card text-center">
+                        <div class="card-body py-5">
+                            <i class="fas fa-boxes fa-5x text-primary mb-4"></i>
+                            <h2 class="display-4 font-weight-bold text-primary">@totalQuantity</h2>
+                            <p class="lead text-muted">Toplam Stok Miktarı</p>
+                            <hr class="my-4">
+                            <p>Bu sayı, tüm enjeksiyon stoklarındaki toplam ürün miktarını göstermektedir.</p>
+                            <a asp-action="LowStock" class="btn btn-warning mt-3">
+                                <i class="fas fa-exclamation-triangle me-1"></i> Düşük Stokları Görüntüle
+                            </a>
+                            <a asp-action="Index" class="btn btn-primary mt-3">
+                                <i class="fas fa-list me-1"></i> Tüm Stokları Görüntüle
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card border-left-info">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="m-0"><i class="fas fa-info-circle me-1"></i> Stok Yönetimi Tavsiyeleri</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                    <div>
+                                        <strong>Düzenli Sayım:</strong> Stok sayımlarını düzenli olarak gerçekleştirin.
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                    <div>
+                                        <strong>Minimum Stok Seviyeleri:</strong> Her ürün için minimum stok seviyelerini belirleyin.
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                    <div>
+                                        <strong>Tedarik Zinciri:</strong> Tedarikçilerle düzenli iletişim kurarak tedarik süreçlerini optimize edin.
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                    <div>
+                                        <strong>Dönemsel Analiz:</strong> Stok hareketlerini dönemsel olarak analiz edin ve talep tahminleri yapın.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <p class="text-muted mb-0">Rapor oluşturulma tarihi: @DateTime.Now.ToString("dd.MM.yyyy HH:mm")</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

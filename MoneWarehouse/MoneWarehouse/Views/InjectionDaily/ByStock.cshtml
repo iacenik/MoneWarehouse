@@ -1,0 +1,93 @@
+﻿@model IEnumerable<EntityLayer.Entities.InjectionDaily>
+
+@{
+    ViewData["Title"] = "Stoğa Göre Günlük Üretim";
+    int stockId = ViewBag.StockId;
+}
+
+<h1>Stoğa Göre Günlük Üretim</h1>
+<h4>Stok ID: @stockId</h4>
+
+<p>
+    <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
+</p>
+
+@if (Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Quantity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmployeeId)
+                </th>
+                <!-- Diğer sütunlar burada listelenecek -->
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeId)
+                    </td>
+                    <!-- Diğer hücreler burada listelenecek -->
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Düzenle</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detaylar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Sil</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Stok Özet İstatistikleri</h5>
+        </div>
+        <div class="card-body">
+            <p>Toplam Kayıt Sayısı: @Model.Count()</p>
+            <p>Toplam Üretim Miktarı: @Model.Sum(i => i.Quantity)</p>
+            <p>İlk Üretim Tarihi: @Model.Min(i => i.Date).ToShortDateString()</p>
+            <p>Son Üretim Tarihi: @Model.Max(i => i.Date).ToShortDateString()</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        Bu stoğa ait günlük üretim kaydı bulunamadı.
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#injectionDailyDataTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json'
+                },
+                "order": [[1, "desc"]],
+                "pageLength": 25
+            });
+            $('[data-toggle="tooltip"]').tooltip();
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

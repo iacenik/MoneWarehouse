@@ -1,0 +1,71 @@
+﻿@model EntityLayer.Entities.Formula
+
+@{
+    ViewData["Title"] = "Yeni Formül";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Yeni Formül Oluştur</h6>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Listeye Dön
+            </a>
+        </div>
+        <form asp-action="Create" method="post">
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Formül Bilgileri</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="FormulaName" class="control-label">Formül Adı</label>
+                                    <input asp-for="FormulaName" class="form-control" placeholder="Formül adını giriniz" required />
+                                    <span asp-validation-for="FormulaName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="FormulaContent" class="control-label">Formül İçeriği</label>
+                                    <textarea asp-for="FormulaContent" class="form-control" rows="10" placeholder="Formül içeriğini giriniz" required></textarea>
+                                    <span asp-validation-for="FormulaContent" class="text-danger"></span>
+                                </div>
+
+                                <div class="alert alert-info mt-3">
+                                    <div class="d-flex">
+                                        <div class="mr-3">
+                                            <i class="fas fa-info-circle fa-2x"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="alert-heading">Formül Girişi Hakkında</h5>
+                                            <p class="mb-0">Formülünüzü doğru formatta girdiğinizden emin olun. Formüller, üretim süreçlerinde kullanılacak malzeme oranlarını ve üretim adımlarını içermelidir.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> İptal
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

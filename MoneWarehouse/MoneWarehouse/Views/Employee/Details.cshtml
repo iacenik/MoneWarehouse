@@ -1,0 +1,194 @@
+﻿@model EntityLayer.Entities.Employee
+
+@{
+    ViewData["Title"] = "Çalışan Detayları";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Çalışan Detayları</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.EmployeeId" class="btn btn-primary btn-sm">
+                    <i class="fas fa-edit"></i> Düzenle
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card mb-4 border-left-primary">
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 40px;">
+                                    @Model.FirstName.Substring(0, 1)@Model.LastName.Substring(0, 1)
+                                </div>
+                                <h4 class="mt-3 font-weight-bold">@Model.FirstName @Model.LastName</h4>
+                                <p class="text-muted">@Model.Department</p>
+                                <p>
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge badge-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-secondary">Pasif</span>
+                                    }
+                                </p>
+                            </div>
+                            <hr>
+                            <div class="text-left">
+                                <div class="mb-2">
+                                    <i class="fas fa-envelope text-primary mr-2"></i> @Model.Email
+                                </div>
+                                <div class="mb-2">
+                                    <i class="fas fa-phone text-primary mr-2"></i> @Model.Phone
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Çalışan Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <th>Çalışan ID</th>
+                                            <td>@Model.EmployeeId</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Ad</th>
+                                            <td>@Model.FirstName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Soyad</th>
+                                            <td>@Model.LastName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Departman</th>
+                                            <td>
+                                                <a asp-action="ByDepartment" asp-route-department="@Model.Department" class="badge badge-info">
+                                                    @Model.Department
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <th>İşe Başlama Tarihi</th>
+                                            <td>@Model.HireDate.ToString("dd.MM.yyyy")</td>
+                                        </tr>
+                                        <tr>
+                                            <th>İşten Ayrılma Tarihi</th>
+                                            <td>
+                                                @if (Model.TerminationDate.HasValue)
+                                                {
+                                                    @Model.TerminationDate.Value.ToString("dd.MM.yyyy")
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Durum</th>
+                                            <td>
+                                                @if (Model.IsActive)
+                                                {
+                                                    <span class="badge badge-success">Aktif</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-secondary">Pasif</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Oluşturulma Tarihi</th>
+                                            <td>@Model.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">İşlemler</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a asp-action="Edit" asp-route-id="@Model.EmployeeId" class="btn btn-primary btn-block mb-2">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    @if (Model.IsActive)
+                                    {
+                                        <a asp-action="Deactivate" asp-route-id="@Model.EmployeeId" class="btn btn-warning btn-block mb-2">
+                                            <i class="fas fa-user-slash"></i> Deaktif Et
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-secondary btn-block mb-2" disabled>
+                                            <i class="fas fa-user-slash"></i> Zaten Deaktif
+                                        </button>
+                                    }
+                                </div>
+                                <div class="col-md-12">
+                                    <a asp-action="Delete" asp-route-id="@Model.EmployeeId" class="btn btn-danger btn-block">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

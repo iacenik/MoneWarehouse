@@ -1,0 +1,104 @@
+﻿@model EntityLayer.Entities.Material
+
+@{
+    ViewData["Title"] = "Malzeme Detayları";
+}
+
+<div class="container-fluid">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-1"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-1"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-primary">Malzeme Detayları</h4>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.MaterialId" class="btn btn-warning btn-sm rounded-pill px-3">
+                    <i class="fas fa-edit me-1"></i> Düzenle
+                </a>
+                <a asp-action="Index" class="btn btn-secondary btn-sm rounded-pill px-3">
+                    <i class="fas fa-arrow-left me-1"></i> Listeye Dön
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                    <div class="card mb-4 border-left-primary">
+                        <div class="card-header bg-light">
+                            <h5 class="m-0 font-weight-bold">Malzeme Bilgileri</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4 text-center">
+                                <div class="display-4 font-weight-bold text-primary">@Model.Quantity @Model.Unit</div>
+                                <p class="text-muted">Mevcut Miktar</p>
+                                @if (Model.Quantity <= 5)
+                                {
+                                    <span class="badge bg-danger">Kritik Seviye</span>
+                                }
+                                else if (Model.Quantity <= 10)
+                                {
+                                    <span class="badge bg-warning text-dark">Düşük Miktar</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Yeterli</span>
+                                }
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Malzeme ID:</div>
+                                <div class="col-md-8 font-weight-bold">@Model.MaterialId</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Malzeme Adı:</div>
+                                <div class="col-md-8 font-weight-bold">@Model.Name</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Birim:</div>
+                                <div class="col-md-8 font-weight-bold">@Model.Unit</div>
+                            </div>
+
+                            <hr />
+
+                            <div class="d-grid gap-2 mt-3">
+                                <a asp-action="Edit" asp-route-id="@Model.MaterialId" class="btn btn-outline-primary">
+                                    <i class="fas fa-edit me-1"></i> Malzemeyi Düzenle
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@Model.MaterialId" class="btn btn-outline-danger">
+                                    <i class="fas fa-trash-alt me-1"></i> Malzemeyi Sil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

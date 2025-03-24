@@ -1,0 +1,81 @@
+﻿@model EntityLayer.Entities.Formula
+
+@{
+    ViewData["Title"] = "Formül Sil";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Formül Silme Onayı</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Details" asp-route-id="@Model.FormulaId" class="btn btn-info btn-sm">
+                    <i class="fas fa-info-circle"></i> Detaylar
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h5><i class="fas fa-exclamation-triangle"></i> Uyarı!</h5>
+                <p><strong>@Model.FormulaName</strong> isimli formülü silmek üzeresiniz. Bu işlem geri alınamaz!</p>
+                <p>Bu formülün kullanıldığı herhangi bir üretim süreci varsa, silme işlemi sorunlara yol açabilir.</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-4 border-left-danger">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Formül Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="font-weight-bold">Formül ID:</label>
+                                        <p class="form-control-static">@Model.FormulaId</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="font-weight-bold">Formül Adı:</label>
+                                        <p class="form-control-static">@Model.FormulaName</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">İçerik Önizleme:</label>
+                                @if (!string.IsNullOrEmpty(Model.FormulaContent))
+                                {
+                                    <div class="bg-light p-3 rounded border">
+                                        <pre class="mb-0" style="white-space: pre-wrap; max-height: 200px; overflow-y: auto;">@Model.FormulaContent</pre>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">İçerik bulunmamaktadır.</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="FormulaId" />
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Sil
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> İptal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

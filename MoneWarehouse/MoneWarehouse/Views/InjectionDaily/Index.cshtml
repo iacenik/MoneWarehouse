@@ -1,0 +1,265 @@
+﻿@model IEnumerable<EntityLayer.Entities.InjectionDaily>
+
+@{
+    ViewData["Title"] = "Günlük Enjeksiyon Kayıtları";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Günlük Enjeksiyon Üretim Kayıtları</h6>
+            <div>
+                <a asp-action="Create" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Yeni Kayıt
+                </a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-filter"></i> Filtrele
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="@Url.Action("ByDateRange")">
+                            <i class="fas fa-calendar"></i> Tarih Aralığına Göre
+                        </a>
+                        <button type="button" class="dropdown-item" data-toggle="modal" data-target="#employeeFilterModal">
+                            <i class="fas fa-user"></i> Çalışana Göre
+                        </button>
+                        <button type="button" class="dropdown-item" data-toggle="modal" data-target="#stockFilterModal">
+                            <i class="fas fa-boxes"></i> Stoğa Göre
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+
+            <div class="row mb-4">
+                <!-- Özet Bilgiler -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Toplam Kayıt Sayısı
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count()</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Toplam Üretim Miktarı
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Sum(e => e.Quantity)</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-cubes fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Bugünkü Üretim
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        @Model.Where(e => e.Date.Date == DateTime.Today).Sum(e => e.Quantity)
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Bu Ayki Üretim
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        @Model.Where(e => e.Date.Month == DateTime.Today.Month && e.Date.Year == DateTime.Today.Year).Sum(e => e.Quantity)
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-calendar-alt fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="injectionDailyDataTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarih</th>
+                            <th>Stok ID</th>
+                            <th>Çalışan ID</th>
+                            <th>Miktar</th>
+                            <th>Açıklama</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                                <td>
+                                    <a asp-action="ByStock" asp-route-stockId="@item.InjectionStockId" class="badge badge-info">
+                                        @item.InjectionStockId
+                                    </a>
+                                </td>
+                                <td>
+                                    <a asp-action="ByEmployee" asp-route-employeeId="@item.EmployeeId" class="badge badge-primary">
+                                        @item.EmployeeId
+                                    </a>
+                                </td>
+                                <td>@item.Quantity</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Description))
+                                    {
+                                        @item.Description
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm" data-toggle="tooltip" title="Detaylar">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Employee Filter Modal -->
+<div class="modal fade" id="employeeFilterModal" tabindex="-1" role="dialog" aria-labelledby="employeeFilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-action="ByEmployee" method="get">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="employeeFilterModalLabel">Çalışana Göre Filtrele</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="employeeId">Çalışan ID</label>
+                        <input type="number" class="form-control" id="employeeId" name="employeeId" placeholder="Çalışan ID'sini giriniz" min="1" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Filtrele</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Stock Filter Modal -->
+<div class="modal fade" id="stockFilterModal" tabindex="-1" role="dialog" aria-labelledby="stockFilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-action="ByStock" method="get">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="stockFilterModalLabel">Stoğa Göre Filtrele</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="stockId">Stok ID</label>
+                        <input type="number" class="form-control" id="stockId" name="stockId" placeholder="Stok ID'sini giriniz" min="1" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Filtrele</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#injectionDailyDataTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json'
+                },
+                "order": [[1, "desc"]],
+                "pageLength": 25
+            });
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

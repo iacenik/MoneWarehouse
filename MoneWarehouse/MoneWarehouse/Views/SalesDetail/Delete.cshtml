@@ -1,0 +1,69 @@
+﻿@model EntityLayer.Entities.SalesDetail
+
+@{
+    ViewData["Title"] = "Satış Detayı Sil";
+}
+
+<div class="container-fluid">
+    <h2>Satış Detayı Sil</h2>
+
+    <div class="mb-3">
+        <a asp-controller="Sales" asp-action="Details" asp-route-id="@Model.SalesId" class="btn btn-secondary">Satışa Dön</a>
+    </div>
+
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Uyarı!</h4>
+        <p>Bu satış detayını silmek istediğinizden emin misiniz?</p>
+        <p>Bu işlem geri alınamaz. Silinen ürün miktarı stoğa geri eklenecektir.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Silinecek Detay Bilgileri</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Detay No:</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Satış No:</dt>
+                <dd class="col-sm-9">@Model.SalesId</dd>
+
+                <dt class="col-sm-3">Ürün Tipi:</dt>
+                <dd class="col-sm-9">@Model.ProductType</dd>
+
+                <dt class="col-sm-3">Ürün:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.ProductType == "Plıntus" && Model.PlıntusStock != null)
+                    {
+                        @Model.PlıntusStock.Name
+                    }
+                    else if (Model.ProductType == "Injection" && Model.InjectionStock != null)
+                    {
+                        @Model.InjectionStock.Name
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Miktar:</dt>
+                <dd class="col-sm-9">@Model.Quantity</dd>
+
+                <dt class="col-sm-3">Birim Fiyat:</dt>
+                <dd class="col-sm-9">@Model.UnitPrice.ToString("N2") ₺</dd>
+
+                <dt class="col-sm-3">Toplam Tutar:</dt>
+                <dd class="col-sm-9">@Model.TotalPrice.ToString("N2") ₺</dd>
+            </dl>
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-danger">Sil</button>
+                <a asp-controller="Sales" asp-action="Details" asp-route-id="@Model.SalesId" class="btn btn-outline-secondary">İptal</a>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,152 @@
+﻿@model IEnumerable<EntityLayer.Entities.Employee>
+
+@{
+    ViewData["Title"] = "Çalışanlar";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Çalışan Listesi</h6>
+            <div>
+                <a asp-action="Create" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Yeni Çalışan
+                </a>
+                <a asp-action="Active" class="btn btn-success btn-sm">
+                    <i class="fas fa-check-circle"></i> Aktif Çalışanlar
+                </a>
+                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#departmentFilterModal">
+                    <i class="fas fa-filter"></i> Departmana Göre Filtrele
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="employeesDataTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.FirstName)</th>
+                            <th>@Html.DisplayNameFor(model => model.LastName)</th>
+                            <th>@Html.DisplayNameFor(model => model.Department)</th>
+                            <th>@Html.DisplayNameFor(model => model.Email)</th>
+                            <th>@Html.DisplayNameFor(model => model.Phone)</th>
+                            <th>@Html.DisplayNameFor(model => model.IsActive)</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                                <td>
+                                    <a asp-action="ByDepartment" asp-route-department="@item.Department" class="badge badge-info">
+                                        @Html.DisplayFor(modelItem => item.Department)
+                                    </a>
+                                </td>
+                                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Phone)</td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge badge-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-secondary">Pasif</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.EmployeeId" class="btn btn-info btn-sm" data-toggle="tooltip" title="Detaylar">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.EmployeeId" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        @if (item.IsActive)
+                                        {
+                                            <a asp-action="Deactivate" asp-route-id="@item.EmployeeId" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Deaktif Et">
+                                                <i class="fas fa-user-slash"></i>
+                                            </a>
+                                        }
+                                        <a asp-action="Delete" asp-route-id="@item.EmployeeId" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Department Filter Modal -->
+<div class="modal fade" id="departmentFilterModal" tabindex="-1" role="dialog" aria-labelledby="departmentFilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-action="ByDepartment" method="get">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="departmentFilterModalLabel">Departmana Göre Filtrele</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="department">Departman</label>
+                        <input type="text" class="form-control" id="department" name="department" placeholder="Departman adını giriniz">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Filtrele</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#employeesDataTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json'
+                },
+                "order": [[0, "asc"]],
+                "pageLength": 25
+            });
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

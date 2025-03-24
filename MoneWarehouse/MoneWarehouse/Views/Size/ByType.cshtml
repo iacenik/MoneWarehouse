@@ -1,0 +1,36 @@
+﻿@model IEnumerable<EntityLayer.Entities.Size>
+
+@{
+    ViewData["Title"] = "Tipe Göre Boyutlar";
+}
+
+<div class="container-fluid">
+    <h2>Tipe Göre Boyutlar</h2>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">Boyut Listesine Dön</a>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Boyut Tipi Seçin</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="ByType" method="post">
+                @Html.AntiForgeryToken()
+                <div class="form-group mb-3">
+                    <label for="sizeType" class="form-label">Boyut Tipi:</label>
+                    <input type="text" id="sizeType" name="sizeType" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Filtrele</button>
+            </form>
+        </div>
+    </div>
+</div>

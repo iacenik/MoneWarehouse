@@ -1,0 +1,63 @@
+﻿@model EntityLayer.Entities.Sales
+
+@{
+    ViewData["Title"] = "Satış Sil";
+}
+
+<div class="container-fluid">
+    <h2>Satış Kaydını Sil</h2>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">Satış Listesine Dön</a>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info">Detaylar</a>
+    </div>
+
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Uyarı!</h4>
+        <p>Bu satış kaydını ve tüm detaylarını silmek istediğinizden emin misiniz?</p>
+        <p>Bu işlem geri alınamaz. Silinen satışa ait ürünler stoka geri eklenecektir.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Silinecek Satış Bilgileri</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Satış No:</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Müşteri:</dt>
+                <dd class="col-sm-9">@(Model.Client?.CompanyName ?? "-")</dd>
+
+                <dt class="col-sm-3">Temsilci:</dt>
+                <dd class="col-sm-9">@(Model.Employee?.FirstName + " " + Model.Employee?.LastName ?? "-")</dd>
+
+                <dt class="col-sm-3">Satış Tarihi:</dt>
+                <dd class="col-sm-9">@Model.SalesDate.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3">Durum:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-@(Model.Status == "Completed" ? "success" :
+                          Model.Status == "Processing" ? "warning" :
+                          Model.Status == "Cancelled" ? "danger" : "info")">
+                        @Model.Status
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">Toplam Tutar:</dt>
+                <dd class="col-sm-9">@Model.TotalAmount.ToString("N2") ₺</dd>
+
+                <dt class="col-sm-3">Ürün Sayısı:</dt>
+                <dd class="col-sm-9">@(Model.SalesDetails?.Count() ?? 0)</dd>
+            </dl>
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-danger">Sil</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">İptal</a>
+            </form>
+        </div>
+    </div>
+</div>

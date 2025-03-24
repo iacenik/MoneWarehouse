@@ -1,0 +1,86 @@
+﻿@{
+    ViewData["Title"] = "Toplam Üretim Raporu";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-primary">Toplam Üretim Raporu</h4>
+            <a asp-action="Index" class="btn btn-secondary rounded-pill px-3">
+                <i class="fas fa-arrow-left me-1"></i> Listeye Dön
+            </a>
+        </div>
+        <div class="card-body">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-1"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card border-light">
+                        <div class="card-body">
+                            <form asp-action="TotalProduction" method="post">
+                                <div class="text-center mb-4">
+                                    <i class="fas fa-chart-bar fa-3x text-primary mb-3"></i>
+                                    <h5>Toplam Üretim Raporu için Tarih Aralığı Seçin</h5>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="date" name="startDate" id="startDate" class="form-control" value="@DateTime.Today.AddMonths(-1).ToString("yyyy-MM-dd")" required />
+                                            <label for="startDate">Başlangıç Tarihi</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="date" name="endDate" id="endDate" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                                            <label for="endDate">Bitiş Tarihi</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-chart-bar me-1"></i> Raporu Oluştur
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Başlangıç tarihi değiştiğinde, bitiş tarihi en az başlangıç tarihi olmalı
+            $('#startDate').change(function() {
+                var startDate = $(this).val();
+                if (startDate && $('#endDate').val() < startDate) {
+                    $('#endDate').val(startDate);
+                }
+            });
+
+            // Bitiş tarihi, başlangıç tarihinden önce olamaz
+            $('#endDate').change(function() {
+                var endDate = $(this).val();
+                if (endDate && $('#startDate').val() > endDate) {
+                    $('#startDate').val(endDate);
+                }
+            });
+
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

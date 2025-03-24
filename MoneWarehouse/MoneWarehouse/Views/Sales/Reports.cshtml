@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Satış Raporları";
+}
+
+<div class="container-fluid">
+    <h2>Satış Raporları</h2>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">Satış Listesine Dön</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5>Aylık Satış Raporu</h5>
+                </div>
+                <div class="card-body">
+                    <p>Belirlediğiniz yıl için aylık satış toplamlarını görüntüler.</p>
+                    <p class="text-muted">Aylık satış verilerini grafikle görsel olarak analiz edebilirsiniz.</p>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="MonthlySalesReport" class="btn btn-primary">Rapora Git</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5>Müşteri Satış Raporu</h5>
+                </div>
+                <div class="card-body">
+                    <p>Belirlediğiniz tarih aralığında müşterilere göre satış verilerini gösterir.</p>
+                    <p class="text-muted">En çok satış yapılan müşterileri belirleyebilirsiniz.</p>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="ClientSalesReport" class="btn btn-primary">Rapora Git</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5>Çalışan Satış Raporu</h5>
+                </div>
+                <div class="card-body">
+                    <p>Belirlediğiniz tarih aralığında çalışanların satış performanslarını gösterir.</p>
+                    <p class="text-muted">En iyi performans gösteren çalışanları tespit edebilirsiniz.</p>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="EmployeeSalesReport" class="btn btn-primary">Rapora Git</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5>Toplam Satış Tutarı</h5>
+                </div>
+                <div class="card-body">
+                    <p>Belirlediğiniz tarih aralığında gerçekleşen toplam satış tutarını gösterir.</p>
+                    <p class="text-muted">Satış performansınızı hızlı bir şekilde değerlendirebilirsiniz.</p>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="TotalSalesAmount" class="btn btn-primary">Rapora Git</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

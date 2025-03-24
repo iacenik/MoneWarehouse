@@ -1,0 +1,139 @@
+﻿@model EntityLayer.Entities.InjectionStock
+
+@{
+    ViewData["Title"] = "Stok Miktarı Yönetimi";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-primary">Stok Miktarı Yönetimi</h4>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary rounded-pill px-3">
+                <i class="fas fa-arrow-left me-1"></i> Detaya Dön
+            </a>
+        </div>
+        <div class="card-body">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-1"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="row">
+                <div class="col-md-5 mb-4">
+                    <div class="card h-100 border-left-primary">
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-info-circle fa-3x text-primary mb-3"></i>
+                                <h5>Stok Bilgileri</h5>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Stok Kodu:</div>
+                                <div class="col-md-8 font-weight-bold">@Model.Code</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Stok Adı:</div>
+                                <div class="col-md-8 font-weight-bold">@Model.Name</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Mevcut Miktar:</div>
+                                <div class="col-md-8">
+                                    <h4 class="font-weight-bold text-primary m-0">@Model.Quantity</h4>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Durum:</div>
+                                <div class="col-md-8">
+                                    @if (Model.Quantity <= 5)
+                                    {
+                                        <span class="badge bg-danger">Kritik Seviye</span>
+                                    }
+                                    else if (Model.Quantity <= 20)
+                                    {
+                                        <span class="badge bg-warning text-dark">Düşük Stok</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Yeterli</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-left-success">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="m-0"><i class="fas fa-plus-circle me-1"></i> Stok Ekle</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form asp-action="IncreaseStock" method="post">
+                                        <input type="hidden" name="stockId" value="@Model.Id" />
+
+                                        <div class="form-floating mb-3">
+                                            <input type="number" name="quantity" id="increaseQuantity" class="form-control" min="1" value="1" required />
+                                            <label for="increaseQuantity">Eklenecek Miktar</label>
+                                        </div>
+
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-plus-circle me-1"></i> Stok Ekle
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-left-danger">
+                                <div class="card-header bg-danger text-white">
+                                    <h5 class="m-0"><i class="fas fa-minus-circle me-1"></i> Stok Çıkar</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form asp-action="DecreaseStock" method="post">
+                                        <input type="hidden" name="stockId" value="@Model.Id" />
+
+                                        <div class="form-floating mb-3">
+                                            <input type="number" name="quantity" id="decreaseQuantity" class="form-control" min="1" max="@Model.Quantity" value="1" required />
+                                            <label for="decreaseQuantity">Çıkarılacak Miktar</label>
+                                        </div>
+
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-danger" @(Model.Quantity < 1 ? "disabled" : "")>
+                                                <i class="fas fa-minus-circle me-1"></i> Stok Çıkar
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Max değerini mevcut stok miktarına göre sınırla
+            $("#decreaseQuantity").attr("max", @Model.Quantity);
+
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

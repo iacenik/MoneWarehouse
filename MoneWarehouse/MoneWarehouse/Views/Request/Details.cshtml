@@ -1,0 +1,212 @@
+﻿@model EntityLayer.Entities.Request
+
+@{
+    ViewData["Title"] = "Talep Detayları";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center py-3">
+                    <h3 class="m-0 font-weight-bold">Talep Detayları</h3>
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-light">
+                            <i class="fas fa-edit me-1"></i> Düzenle
+                        </a>
+                        <a asp-action="Index" class="btn btn-light ms-2">
+                            <i class="fas fa-arrow-left me-1"></i> Listeye Dön
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4 class="mb-4 border-bottom pb-2">Talep Bilgileri</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-column">
+                                        <span class="text-sm text-secondary mb-1">Talep Numarası:</span>
+                                        <span class="fw-bold">@Model.RequestNumber</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-column">
+                                        <span class="text-sm text-secondary mb-1">Çalışan:</span>
+                                        <span class="fw-bold">@Model.Employee.EmployeeName</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-column">
+                                        <span class="text-sm text-secondary mb-1">Oluşturma Tarihi:</span>
+                                        <span class="fw-bold">@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-column">
+                                        <span class="text-sm text-secondary mb-1">Son Tarih:</span>
+                                        <span class="fw-bold">@(Model.DueDate.HasValue ? Model.DueDate.Value.ToString("dd.MM.yyyy HH:mm") : "-")</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-column">
+                                        <span class="text-sm text-secondary mb-1">Talep Türü:</span>
+                                        <span class="fw-bold">@(string.IsNullOrEmpty(Model.RequestType) ? "-" : Model.RequestType)</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-column">
+                                        <span class="text-sm text-secondary mb-1">Tamamlanma Tarihi:</span>
+                                        <span class="fw-bold">@(Model.CompletedDate.HasValue ? Model.CompletedDate.Value.ToString("dd.MM.yyyy HH:mm") : "-")</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-column">
+                                        <span class="text-sm text-secondary mb-1">Son Güncelleme:</span>
+                                        <span class="fw-bold">@(Model.LastUpdated.HasValue ? Model.LastUpdated.Value.ToString("dd.MM.yyyy HH:mm") : "-")</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-column">
+                                        <span class="text-sm text-secondary mb-1">Güncelleyen:</span>
+                                        <span class="fw-bold">@(string.IsNullOrEmpty(Model.UpdatedBy) ? "-" : Model.UpdatedBy)</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="d-flex flex-column mt-3">
+                                        <span class="text-sm text-secondary mb-1">Açıklama:</span>
+                                        <p class="mb-0">@(string.IsNullOrEmpty(Model.Description) ? "-" : Model.Description)</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="d-flex flex-column mt-3">
+                                        <span class="text-sm text-secondary mb-1">Notlar:</span>
+                                        <p class="mb-0">@(string.IsNullOrEmpty(Model.Notes) ? "-" : Model.Notes)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border shadow-sm h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="m-0">Durum Bilgileri</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <h6 class="text-sm text-secondary mb-2">Mevcut Durum</h6>
+                                        @{
+                                            string statusBadgeClass = Model.Status switch
+                                            {
+                                                "Pending" => "bg-warning",
+                                                "In Progress" => "bg-info",
+                                                "Completed" => "bg-success",
+                                                "Cancelled" => "bg-danger",
+                                                _ => "bg-secondary"
+                                            };
+                                            string statusText = Model.Status switch
+                                            {
+                                                "Pending" => "Bekliyor",
+                                                "In Progress" => "Devam Ediyor",
+                                                "Completed" => "Tamamlandı",
+                                                "Cancelled" => "İptal Edildi",
+                                                _ => Model.Status
+                                            };
+                                        }
+                                        <span class="badge @statusBadgeClass fs-6">@statusText</span>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <h6 class="text-sm text-secondary mb-2">Öncelik</h6>
+                                        @{
+                                            string priorityBadgeClass = Model.Priority switch
+                                            {
+                                                "Low" => "bg-info",
+                                                "Normal" => "bg-success",
+                                                "High" => "bg-warning",
+                                                "Urgent" => "bg-danger",
+                                                _ => "bg-secondary"
+                                            };
+                                            string priorityText = Model.Priority switch
+                                            {
+                                                "Low" => "Düşük",
+                                                "Normal" => "Normal",
+                                                "High" => "Yüksek",
+                                                "Urgent" => "Acil",
+                                                _ => Model.Priority
+                                            };
+                                        }
+                                        <span class="badge @priorityBadgeClass fs-6">@priorityText</span>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <h6 class="text-sm text-secondary mb-2">Atanan Kişi</h6>
+                                        <p class="mb-0 fw-bold">@(string.IsNullOrEmpty(Model.AssignedTo) ? "-" : Model.AssignedTo)</p>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <h6 class="text-sm border-bottom pb-2 mb-3">Durum Güncelleme</h6>
+                                        <form asp-action="UpdateStatus" class="mb-3">
+                                            <input type="hidden" name="id" value="@Model.Id" />
+                                            <div class="d-flex">
+                                                <select name="status" class="form-select me-2">
+                                                    <option value="Pending" selected="@(Model.Status == "Pending")">Bekliyor</option>
+                                                    <option value="In Progress" selected="@(Model.Status == "In Progress")">Devam Ediyor</option>
+                                                    <option value="Completed" selected="@(Model.Status == "Completed")">Tamamlandı</option>
+                                                    <option value="Cancelled" selected="@(Model.Status == "Cancelled")">İptal Edildi</option>
+                                                </select>
+                                                <button type="submit" class="btn btn-primary">Güncelle</button>
+                                            </div>
+                                        </form>
+
+                                        <h6 class="text-sm border-bottom pb-2 mb-3">Talep Atama</h6>
+                                        <form asp-action="AssignRequest">
+                                            <input type="hidden" name="id" value="@Model.Id" />
+                                            <div class="d-flex">
+                                                <input type="text" name="assignedTo" class="form-control me-2" placeholder="Atanacak kişi" value="@Model.AssignedTo" />
+                                                <button type="submit" class="btn btn-primary">Ata</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                            <i class="fas fa-edit me-1"></i> Düzenle
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i> Sil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function () {
+            $('.alert').alert('close');
+        }, 5000);
+    </script>
+}

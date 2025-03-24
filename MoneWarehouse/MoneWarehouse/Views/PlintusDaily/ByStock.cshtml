@@ -1,0 +1,137 @@
+﻿@model IEnumerable<EntityLayer.Entities.PlıntusDaily>
+
+@{
+    ViewData["Title"] = "Stoka Göre Üretim Kayıtları";
+    int stockId = ViewBag.StockId;
+    string stockName = Model.FirstOrDefault()?.PlıntusStock?.Name ?? $"Stok ID: {stockId}";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-primary">Stoka Göre Üretim Kayıtları</h4>
+            <a asp-action="Index" class="btn btn-secondary rounded-pill px-3">
+                <i class="fas fa-arrow-left me-1"></i> Listeye Dön
+            </a>
+        </div>
+        <div class="card-body">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-1"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle me-1"></i> <strong>@stockName</strong> stokuna ait üretim kayıtları listeleniyor.
+            </div>
+
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table id="stockDataTable" class="table table-hover table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Tarih</th>
+                                <th>Çalışan</th>
+                                <th>Miktar</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                                    <td>
+                                        @if (item.Employee != null)
+                                        {
+                                            <span>@item.Employee.EmployeeName</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Çalışan ID: @item.EmployeeId</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">@item.Quantity</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" data-toggle="tooltip" title="Detaylar">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="Düzenle">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="m-0"><i class="fas fa-boxes me-1"></i> Stok Üretim Özeti</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="display-4 font-weight-bold">@Model.Count()</div>
+                                <p>Toplam Kayıt Sayısı</p>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="display-4 font-weight-bold">@Model.Sum(x => x.Quantity)</div>
+                                <p>Toplam Üretim Miktarı</p>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="display-4 font-weight-bold">@Model.Select(x => x.EmployeeId).Distinct().Count()</div>
+                                <p>Çalışan Sayısı</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 text-center mb-3">
+                                <div class="display-4 font-weight-bold">@Model.OrderBy(x => x.Date).First().Date.ToString("dd.MM.yyyy")</div>
+                                <p>İlk Üretim Tarihi</p>
+                            </div>
+                            <div class="col-md-6 text-center mb-3">
+                                <div class="display-4 font-weight-bold">@Model.OrderByDescending(x => x.Date).First().Date.ToString("dd.MM.yyyy")</div>
+                                <p>Son Üretim Tarihi</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning text-center" role="alert">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                    <h5>Kayıt bulunamadı!</h5>
+                    <p>Bu stoka ait üretim kaydı bulunmamaktadır.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#stockDataTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json'
+                },
+                "order": [[1, "desc"]],
+                "pageLength": 25
+            });
+            $('[data-toggle="tooltip"]').tooltip();
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

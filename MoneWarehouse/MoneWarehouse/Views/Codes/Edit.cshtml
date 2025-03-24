@@ -1,0 +1,75 @@
+﻿@model EntityLayer.Entities.Codes
+
+@{
+    ViewData["Title"] = "Kod Düzenle";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Kod Düzenle</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Details" asp-route-id="@Model.CodeId" class="btn btn-info btn-sm">
+                    <i class="fas fa-info-circle"></i> Detaylar
+                </a>
+            </div>
+        </div>
+        <form asp-action="Edit" method="post">
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                <input type="hidden" asp-for="CodeId" />
+
+                <div class="row">
+                    <div class="col-md-6 mx-auto">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Kod Bilgileri</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="Code" class="control-label"></label>
+                                    <input asp-for="Code" class="form-control" required />
+                                    <span asp-validation-for="Code" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="CodeName" class="control-label"></label>
+                                    <input asp-for="CodeName" class="form-control" required />
+                                    <span asp-validation-for="CodeName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="SizeId" class="control-label"></label>
+                                    <input asp-for="SizeId" class="form-control" />
+                                    <span asp-validation-for="SizeId" class="text-danger"></span>
+                                    <small class="form-text text-muted">Boyut ID'si boş bırakılabilir. Boyut ID'sini bilmiyorsanız, Boyutlar sayfasından kontrol edebilirsiniz.</small>
+                                </div>
+                                <div class="alert alert-warning mt-3">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span class="ml-2">Bu kod enjeksiyon veya plintus ürünleriyle ilişkilendirilmişse, dikkatli düzenleme yapınız.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> İptal
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

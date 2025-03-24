@@ -1,0 +1,286 @@
+﻿@model EntityLayer.Entities.InjectionDaily
+
+@{
+    ViewData["Title"] = "Üretim Kaydı Düzenle";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Günlük Enjeksiyon Üretim Kaydı Düzenle</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info btn-sm">
+                    <i class="fas fa-info-circle"></i> Detaylar
+                </a>
+            </div>
+        </div>
+        <form asp-action="Edit" method="post">
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" name="oldQuantity" value="@ViewBag.OldQuantity" />
+
+                <div class="alert alert-warning">
+                    <div class="d-flex">
+                        <div class="mr-3">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="alert-heading">Dikkat!</h5>
+                            <p class="mb-0">Bu kaydı düzenlemek, stok miktarlarını otomatik olarak günceller. Miktarı azaltırsanız, stoktan düşülecek; arttırırsanız, stoğa eklenecektir.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Üretim Bilgileri</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="InjectionStockId" class="control-label">Stok ID</label>
+                                    <div class="input-group">
+                                        <input asp-for="InjectionStockId" class="form-control" required />
+                                        <div class="input-group-append">
+                                            <a href="#" class="btn btn-outline-secondary" data-toggle="modal" data-target="#stockSelectModal">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="InjectionStockId" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Quantity" class="control-label">Üretim Miktarı</label>
+                                    <input asp-for="Quantity" class="form-control" required min="1" />
+                                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                                    <small class="form-text text-muted">Mevcut miktar: <strong>@ViewBag.OldQuantity</strong></small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Description" class="control-label">Açıklama</label>
+                                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Personel ve Tarih Bilgileri</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="EmployeeId" class="control-label">Çalışan ID</label>
+                                    <div class="input-group">
+                                        <input asp-for="EmployeeId" class="form-control" required />
+                                        <div class="input-group-append">
+                                            <a href="#" class="btn btn-outline-secondary" data-toggle="modal" data-target="#employeeSelectModal">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Date" class="control-label">Üretim Tarihi</label>
+                                    <input asp-for="Date" type="date" class="form-control" required />
+                                    <span asp-validation-for="Date" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> İptal
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Stock Select Modal -->
+<div class="modal fade" id="stockSelectModal" tabindex="-1" role="dialog" aria-labelledby="stockSelectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stockSelectModalLabel">Stok Seçimi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <p class="mb-0">Lütfen kullanılabilir stoklar listesinden seçim yapınız. Stok ID'si otomatik olarak forma eklenecektir.</p>
+                </div>
+                <div class="alert alert-warning">
+                    <p class="mb-0">Bu sadece ön izleme amaçlıdır. Gerçek uygulamada, mevcut stokların AJAX çağrısıyla getirilmesi gerekecektir.</p>
+                </div>
+                <table class="table table-bordered table-hover" id="stockSelectTable">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Stok ID</th>
+                            <th>Kod</th>
+                            <th>Ad</th>
+                            <th>Mevcut Miktar</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>INJ-STK-001</td>
+                            <td>Standart Enjeksiyon</td>
+                            <td>120</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-stock" data-id="1">Seç</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>INJ-STK-002</td>
+                            <td>Premium Enjeksiyon</td>
+                            <td>85</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-stock" data-id="2">Seç</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>INJ-STK-003</td>
+                            <td>Ekonomik Enjeksiyon</td>
+                            <td>210</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-stock" data-id="3">Seç</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Employee Select Modal -->
+<div class="modal fade" id="employeeSelectModal" tabindex="-1" role="dialog" aria-labelledby="employeeSelectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="employeeSelectModalLabel">Çalışan Seçimi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <p class="mb-0">Lütfen aktif çalışanlar listesinden seçim yapınız. Çalışan ID'si otomatik olarak forma eklenecektir.</p>
+                </div>
+                <div class="alert alert-warning">
+                    <p class="mb-0">Bu sadece ön izleme amaçlıdır. Gerçek uygulamada, aktif çalışanların AJAX çağrısıyla getirilmesi gerekecektir.</p>
+                </div>
+                <table class="table table-bordered table-hover" id="employeeSelectTable">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Çalışan ID</th>
+                            <th>Ad</th>
+                            <th>Soyad</th>
+                            <th>Departman</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Ahmet</td>
+                            <td>Yılmaz</td>
+                            <td>Üretim</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-employee" data-id="1">Seç</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Mehmet</td>
+                            <td>Kaya</td>
+                            <td>Üretim</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-employee" data-id="2">Seç</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Ayşe</td>
+                            <td>Demir</td>
+                            <td>Üretim</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-employee" data-id="3">Seç</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables
+            $('#stockSelectTable, #employeeSelectTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json'
+                },
+                "pageLength": 5
+            });
+
+            // Stock selection handler
+            $('.select-stock').click(function() {
+                var stockId = $(this).data('id');
+                $('#InjectionStockId').val(stockId);
+                $('#stockSelectModal').modal('hide');
+            });
+
+            // Employee selection handler
+            $('.select-employee').click(function() {
+                var employeeId = $(this).data('id');
+                $('#EmployeeId').val(employeeId);
+                $('#employeeSelectModal').modal('hide');
+            });
+
+            // Format date for the date input
+            function formatDateForInput(dateString) {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return date.toISOString().split('T')[0];
+            }
+
+            // Format date for the date input
+            $("#Date").val(formatDateForInput($("#Date").val()));
+        });
+    </script>
+}

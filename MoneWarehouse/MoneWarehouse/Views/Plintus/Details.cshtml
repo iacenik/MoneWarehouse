@@ -1,0 +1,143 @@
+﻿@model EntityLayer.Entities.Plıntus
+
+@{
+    ViewData["Title"] = "Plıntus Detayları";
+}
+
+<div class="container-fluid">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-1"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-1"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-primary">Plıntus Detayları</h4>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.PlıntusId" class="btn btn-warning btn-sm rounded-pill px-3">
+                    <i class="fas fa-edit me-1"></i> Düzenle
+                </a>
+                <a asp-action="Index" class="btn btn-secondary btn-sm rounded-pill px-3">
+                    <i class="fas fa-arrow-left me-1"></i> Listeye Dön
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                    <div class="card mb-4 border-left-primary">
+                        <div class="card-header bg-light">
+                            <h5 class="m-0 font-weight-bold">Plıntus Bilgileri</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">ID:</div>
+                                <div class="col-md-8 font-weight-bold">@Model.PlıntusId</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Kod:</div>
+                                <div class="col-md-8 font-weight-bold">@Model.Code</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">İsim:</div>
+                                <div class="col-md-8 font-weight-bold">@Model.Name</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Boyut:</div>
+                                <div class="col-md-8 font-weight-bold">
+                                    @(Model.Size != null ? Model.Size.SizeName : $"Boyut {Model.SizeId}")
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Kod Tipi:</div>
+                                <div class="col-md-8 font-weight-bold">
+                                    @(Model.Codes != null ? Model.Codes.CodeName : $"Kod {Model.CodeId}")
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Durum:</div>
+                                <div class="col-md-8">
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Deaktif</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Oluşturma Tarihi:</div>
+                                <div class="col-md-8">@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</div>
+                            </div>
+
+                            @if (Model.LastModifiedDate.HasValue)
+                            {
+                                <div class="row mb-3">
+                                    <div class="col-md-4 text-muted">Son Güncelleme:</div>
+                                    <div class="col-md-8">@Model.LastModifiedDate.Value.ToString("dd.MM.yyyy HH:mm")</div>
+                                </div>
+                            }
+
+                            <hr />
+
+                            <div class="d-grid gap-2 mt-3">
+                                <a asp-action="Edit" asp-route-id="@Model.PlıntusId" class="btn btn-outline-primary">
+                                    <i class="fas fa-edit me-1"></i> Plıntus Düzenle
+                                </a>
+                                @if (Model.IsActive)
+                                {
+                                    <form asp-action="Deactivate" method="post">
+                                        <input type="hidden" name="id" value="@Model.PlıntusId" />
+                                        <button type="submit" class="btn btn-outline-warning w-100">
+                                            <i class="fas fa-ban me-1"></i> Deaktif Et
+                                        </button>
+                                    </form>
+                                }
+                                <a asp-action="Delete" asp-route-id="@Model.PlıntusId" class="btn btn-outline-danger">
+                                    <i class="fas fa-trash-alt me-1"></i> Plıntus Sil
+                                </a>
+                                <a asp-action="WithDailyEntries" asp-route-id="@Model.PlıntusId" class="btn btn-outline-secondary">
+                                    <i class="fas fa-calendar-alt me-1"></i> Günlük Kayıtları Görüntüle
+                                </a>
+                                <a asp-action="WithStocks" asp-route-id="@Model.PlıntusId" class="btn btn-outline-success">
+                                    <i class="fas fa-boxes me-1"></i> Stok Bilgilerini Görüntüle
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

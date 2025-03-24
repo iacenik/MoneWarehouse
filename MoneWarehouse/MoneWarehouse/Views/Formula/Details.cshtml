@@ -1,0 +1,108 @@
+﻿@model EntityLayer.Entities.Formula
+
+@{
+    ViewData["Title"] = "Formül Detayları";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Formül Detayları</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.FormulaId" class="btn btn-primary btn-sm">
+                    <i class="fas fa-edit"></i> Düzenle
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-4 border-left-primary">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Formül Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="font-weight-bold">Formül ID:</label>
+                                        <p class="form-control-static">@Model.FormulaId</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="font-weight-bold">Formül Adı:</label>
+                                        <p class="form-control-static">@Model.FormulaName</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">Formül İçeriği</h6>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.FormulaContent))
+                    {
+                        <div class="bg-light p-3 rounded border">
+                            <pre class="mb-0" style="white-space: pre-wrap;">@Model.FormulaContent</pre>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> Formül içeriği bulunmamaktadır.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between">
+                <a asp-action="Edit" asp-route-id="@Model.FormulaId" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Düzenle
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.FormulaId" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Sil
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

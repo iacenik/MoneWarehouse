@@ -1,0 +1,107 @@
+﻿@model EntityLayer.Entities.Client
+
+@{
+    ViewData["Title"] = "Müşteri Sil";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Müşteri Silme Onayı</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Details" asp-route-id="@Model.ClientId" class="btn btn-info btn-sm">
+                    <i class="fas fa-info-circle"></i> Detaylar
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h5><i class="fas fa-exclamation-triangle"></i> Uyarı!</h5>
+                <p><strong>@Model.CompanyName</strong> isimli müşteriyi silmek üzeresiniz. Bu işlem geri alınamaz!</p>
+                <p>Eğer bu müşteri ile ilişkili satışlar varsa, silme işlemi başarısız olabilir.</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Firma Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.CompanyName)</th>
+                                    <td>@Html.DisplayFor(model => model.CompanyName)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.ContactName)</th>
+                                    <td>@Html.DisplayFor(model => model.ContactName)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.ContactTitle)</th>
+                                    <td>@Html.DisplayFor(model => model.ContactTitle)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Email)</th>
+                                    <td>@Html.DisplayFor(model => model.Email)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Phone)</th>
+                                    <td>@Html.DisplayFor(model => model.Phone)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Country)</th>
+                                    <td>@Html.DisplayFor(model => model.Country)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Durum Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.IsActive)</th>
+                                    <td>
+                                        @if (Model.IsActive)
+                                        {
+                                            <span class="badge badge-success">Aktif</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">Pasif</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+                                    <td>@Html.DisplayFor(model => model.CreatedDate)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="ClientId" />
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Sil
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> İptal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

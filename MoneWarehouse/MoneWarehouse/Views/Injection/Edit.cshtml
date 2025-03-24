@@ -1,0 +1,240 @@
+﻿@model EntityLayer.Entities.Injection
+
+@{
+    ViewData["Title"] = "Enjeksiyon Düzenle";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Enjeksiyon Düzenle</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Details" asp-route-id="@Model.InjectionId" class="btn btn-info btn-sm">
+                    <i class="fas fa-info-circle"></i> Detaylar
+                </a>
+            </div>
+        </div>
+        <form asp-action="Edit" method="post">
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                <input type="hidden" asp-for="InjectionId" />
+
+                <div class="row">
+                    <div class="col-md-6 mx-auto">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Enjeksiyon Bilgileri</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="SizeId" class="control-label">Boyut ID</label>
+                                    <div class="input-group">
+                                        <input asp-for="SizeId" class="form-control" required />
+                                        <div class="input-group-append">
+                                            <a href="#" class="btn btn-outline-secondary" data-toggle="modal" data-target="#sizeSelectModal">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="SizeId" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="CodeId" class="control-label">Kod ID</label>
+                                    <div class="input-group">
+                                        <input asp-for="CodeId" class="form-control" required />
+                                        <div class="input-group-append">
+                                            <a href="#" class="btn btn-outline-secondary" data-toggle="modal" data-target="#codeSelectModal">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="CodeId" class="text-danger"></span>
+                                </div>
+
+                                <div class="alert alert-warning mt-3">
+                                    <div class="d-flex">
+                                        <div class="mr-3">
+                                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="alert-heading">Dikkat!</h5>
+                                            <p class="mb-0">Eğer bu enjeksiyon ürünü ile ilişkili günlük üretim kayıtları varsa, değişiklikler kayıtlarda tutarsızlıklara neden olabilir.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                    <a asp-action="Details" asp-route-id="@Model.InjectionId" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> İptal
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Size Select Modal -->
+<div class="modal fade" id="sizeSelectModal" tabindex="-1" role="dialog" aria-labelledby="sizeSelectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sizeSelectModalLabel">Boyut Seçimi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <p class="mb-0">Lütfen kullanılabilir boyutlar listesinden seçim yapınız. Boyut ID'si otomatik olarak forma eklenecektir.</p>
+                </div>
+                <div class="alert alert-warning">
+                    <p class="mb-0">Bu sadece ön izleme amaçlıdır. Gerçek uygulamada, mevcut boyutların AJAX çağrısıyla getirilmesi gerekecektir.</p>
+                </div>
+                <table class="table table-bordered table-hover" id="sizeSelectTable">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Boyut ID</th>
+                            <th>Boyut Adı</th>
+                            <th>Boyut Tipi</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>10x20</td>
+                            <td>Standart</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-size" data-id="1">Seç</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>15x30</td>
+                            <td>Standart</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-size" data-id="2">Seç</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>20x40</td>
+                            <td>Büyük</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-size" data-id="3">Seç</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Code Select Modal -->
+<div class="modal fade" id="codeSelectModal" tabindex="-1" role="dialog" aria-labelledby="codeSelectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="codeSelectModalLabel">Kod Seçimi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <p class="mb-0">Lütfen kullanılabilir kodlar listesinden seçim yapınız. Kod ID'si otomatik olarak forma eklenecektir.</p>
+                </div>
+                <div class="alert alert-warning">
+                    <p class="mb-0">Bu sadece ön izleme amaçlıdır. Gerçek uygulamada, mevcut kodların AJAX çağrısıyla getirilmesi gerekecektir.</p>
+                </div>
+                <table class="table table-bordered table-hover" id="codeSelectTable">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Kod ID</th>
+                            <th>Kod</th>
+                            <th>Kod Adı</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>INJ-001</td>
+                            <td>Standart Enjeksiyon</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-code" data-id="1">Seç</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>INJ-002</td>
+                            <td>Premium Enjeksiyon</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-code" data-id="2">Seç</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>INJ-003</td>
+                            <td>Ekonomik Enjeksiyon</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm select-code" data-id="3">Seç</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables
+            $('#sizeSelectTable, #codeSelectTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json'
+                },
+                "pageLength": 5
+            });
+
+            // Size selection handler
+            $('.select-size').click(function() {
+                var sizeId = $(this).data('id');
+                $('#SizeId').val(sizeId);
+                $('#sizeSelectModal').modal('hide');
+            });
+
+            // Code selection handler
+            $('.select-code').click(function() {
+                var codeId = $(this).data('id');
+                $('#CodeId').val(codeId);
+                $('#codeSelectModal').modal('hide');
+            });
+        });
+    </script>
+}

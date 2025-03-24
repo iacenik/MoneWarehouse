@@ -1,31 +1,40 @@
 using System.Diagnostics;
+using BusinessLayer.Services;
 using Microsoft.AspNetCore.Mvc;
 using MoneWarehouse.Models;
 
-namespace MoneWarehouse.Controllers;
-
-public class HomeController : Controller
+namespace MoneWarehouse.Controllers
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    public class HomeController : Controller
     {
-        _logger = logger;
-    }
+        private readonly ILogger<HomeController> _logger;
+        private readonly ISalesService _salesService;
+        private readonly IRequestService _requestService;
 
-    public IActionResult Index()
-    {
-        return View();
-    }
+        public HomeController(
+            ILogger<HomeController> logger,
+            ISalesService salesService,
+            IRequestService requestService)
+        {
+            _logger = logger;
+            _salesService = salesService;
+            _requestService = requestService;
+        }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+        public IActionResult Index()
+        {
+            return RedirectToAction("Index", "Dashboard");
+        }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 }

@@ -1,0 +1,45 @@
+﻿@model Dictionary<string, int>
+
+@{
+    ViewData["Title"] = "Ürün Satış Adet Raporu";
+}
+
+<div class="container-fluid">
+    <h2>Ürün Satış Adet Raporu</h2>
+
+    <div class="mb-3">
+        <a asp-action="ProductSalesReport" class="btn btn-secondary">Raporlara Dön</a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Tarih Aralığı Seçin</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="ProductSalesCount" method="post">
+                @Html.AntiForgeryToken()
+                <div class="row align-items-end">
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label for="startDate" class="form-label">Başlangıç Tarihi:</label>
+                            <input type="date" id="startDate" name="startDate" class="form-control" value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")" required />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label for="endDate" class="form-label">Bitiş Tarihi:</label>
+                            <input type="date" id="endDate" name="endDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary mb-3">Raporu Oluştur</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        Lütfen rapor oluşturmak için tarih aralığı seçin.
+    </div>
+</div>

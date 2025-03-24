@@ -1,0 +1,175 @@
+﻿@model Dictionary<int, decimal>
+
+@{
+    ViewData["Title"] = "Müşteri Satış Raporu";
+}
+
+<div class="container-fluid">
+    <h2>Müşteri Satış Raporu</h2>
+
+    <div class="mb-3">
+        <a asp-action="Reports" class="btn btn-secondary">Raporlara Dön</a>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Tarih Aralığı Seçin</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="ClientSalesReport" method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="startDate" class="form-label">Başlangıç Tarihi:</label>
+                    <input type="date" id="startDate" name="startDate" class="form-control" value="@ViewBag.StartDate" required />
+                </div>
+                <div class="col-md-4">
+                    <label for="endDate" class="form-label">Bitiş Tarihi:</label>
+                    <input type="date" id="endDate" name="endDate" class="form-control" value="@ViewBag.EndDate" required />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Göster</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="row">
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Müşteri Bazlı Satış Grafiği</h5>
+                        <small>@ViewBag.StartDate - @ViewBag.EndDate</small>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="clientSalesChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Müşteri Satış Tutarları</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Müşteri</th>
+                                        <th class="text-end">Satış Tutarı</th>
+                                        <th class="text-end">Oran</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        decimal totalAmount = Model.Values.Sum();
+
+                                        foreach (var item in Model.OrderByDescending(x => x.Value))
+                                        {
+                                            string clientName = ViewBag.ClientNames.ContainsKey(item.Key) ? ViewBag.ClientNames[item.Key] : $"Müşteri {item.Key}";
+                                            decimal percentage = totalAmount > 0 ? (item.Value / totalAmount) * 100 : 0;
+
+                                            <tr>
+                                                <td>
+                                                    <a asp-action="ByClient" asp-route-id="@item.Key">@clientName</a>
+                                                </td>
+                                                <td class="text-end">@item.Value.ToString("N2") ₺</td>
+                                                <td class="text-end">@percentage.ToString("F1")%</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-primary">
+                                        <th>Toplam</th>
+                                        <th class="text-end">@totalAmount.ToString("N2") ₺</th>
+                                        <th class="text-end">100%</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Seçilen tarih aralığında herhangi bir satış verisi bulunamadı.
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('clientSalesChart');
+
+            if (ctx) {
+                var clientNames = [];
+                var salesData = [];
+                var backgroundColors = [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)'
+                ];
+
+        @foreach (var item in Model.OrderByDescending(x => x.Value))
+        {
+            <text>
+                        clientNames.push('@(ViewBag.ClientNames.ContainsKey(item.Key) ? ViewBag.ClientNames[item.Key] : $"Müşteri {item.Key}")');
+                        salesData.push(@item.Value.ToString("F2").Replace(",", "."));
+            </text>
+        }
+
+                var myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: clientNames,
+                        datasets: [{
+                            data: salesData,
+                            backgroundColor: backgroundColors,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        var label = context.label || '';
+                                        var value = context.parsed;
+                                        var total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        var percentage = Math.round((value / total) * 100);
+                                        return label + ': ' + value.toLocaleString('tr-TR') + ' ₺ (' + percentage + '%)';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

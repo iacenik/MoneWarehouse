@@ -1,0 +1,145 @@
+﻿@model EntityLayer.Entities.InjectionDaily
+
+@{
+    ViewData["Title"] = "Üretim Kaydı Detayları";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Günlük Enjeksiyon Üretim Kaydı Detayları</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
+                    <i class="fas fa-edit"></i> Düzenle
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Üretim Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th>Kayıt ID</th>
+                                    <td>@Model.Id</td>
+                                </tr>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <td>@Model.Date.ToString("dd.MM.yyyy")</td>
+                                </tr>
+                                <tr>
+                                    <th>Üretim Miktarı</th>
+                                    <td>
+                                        <span class="badge badge-success">@Model.Quantity</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Açıklama</th>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(Model.Description))
+                                        {
+                                            @Model.Description
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Açıklama yok</span>
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">İlişkili Bilgiler</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th>Stok ID</th>
+                                    <td>
+                                        <a asp-action="ByStock" asp-route-stockId="@Model.InjectionStockId" class="badge badge-info">
+                                            @Model.InjectionStockId
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Çalışan ID</th>
+                                    <td>
+                                        <a asp-action="ByEmployee" asp-route-employeeId="@Model.EmployeeId" class="badge badge-primary">
+                                            @Model.EmployeeId
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Hızlı İşlemler</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-block mb-2">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-block mb-2">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </a>
+                                </div>
+                                <div class="col-md-12">
+                                    <a asp-controller="InjectionStock" asp-action="Details" asp-route-id="@Model.InjectionStockId" class="btn btn-info btn-block">
+                                        <i class="fas fa-boxes"></i> Stok Detayları
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

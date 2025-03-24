@@ -1,0 +1,168 @@
+﻿@model EntityLayer.Entities.Client
+
+@{
+    ViewData["Title"] = "Müşteri Detayları";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Müşteri Detayları</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.ClientId" class="btn btn-primary btn-sm">
+                    <i class="fas fa-edit"></i> Düzenle
+                </a>
+                <a asp-action="Sales" asp-route-id="@Model.ClientId" class="btn btn-success btn-sm">
+                    <i class="fas fa-shopping-cart"></i> Satışlar
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Firma Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.CompanyName)</th>
+                                    <td>@Html.DisplayFor(model => model.CompanyName)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.ContactName)</th>
+                                    <td>@Html.DisplayFor(model => model.ContactName)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.ContactTitle)</th>
+                                    <td>@Html.DisplayFor(model => model.ContactTitle)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Address)</th>
+                                    <td>@Html.DisplayFor(model => model.Address)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Country)</th>
+                                    <td>@Html.DisplayFor(model => model.Country)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Phone)</th>
+                                    <td>@Html.DisplayFor(model => model.Phone)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Email)</th>
+                                    <td>@Html.DisplayFor(model => model.Email)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Finans & Teslimat Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.RegComNumber)</th>
+                                    <td>@Html.DisplayFor(model => model.RegComNumber)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.CIFNumber)</th>
+                                    <td>@Html.DisplayFor(model => model.CIFNumber)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.BankName)</th>
+                                    <td>@Html.DisplayFor(model => model.BankName)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.IBAN)</th>
+                                    <td>@Html.DisplayFor(model => model.IBAN)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.DeliveryConditions)</th>
+                                    <td>@Html.DisplayFor(model => model.DeliveryConditions)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.IsActive)</th>
+                                    <td>
+                                        @if (Model.IsActive)
+                                        {
+                                            <span class="badge badge-success">Aktif</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">Pasif</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+                                    <td>@Html.DisplayFor(model => model.CreatedDate)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model.ClientId" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Düzenle
+                    </a>
+                    <a asp-action="Sales" asp-route-id="@Model.ClientId" class="btn btn-success">
+                        <i class="fas fa-shopping-cart"></i> Satışlar
+                    </a>
+                </div>
+                <div>
+                    @if (Model.IsActive)
+                    {
+                        <a asp-action="Deactivate" asp-route-id="@Model.ClientId" class="btn btn-warning">
+                            <i class="fas fa-user-slash"></i> Deaktif Et
+                        </a>
+                    }
+                    <a asp-action="Delete" asp-route-id="@Model.ClientId" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Sil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

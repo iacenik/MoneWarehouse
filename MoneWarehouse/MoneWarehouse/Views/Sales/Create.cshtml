@@ -1,0 +1,88 @@
+﻿@model EntityLayer.Entities.Sales
+
+@{
+    ViewData["Title"] = "Yeni Satış";
+}
+
+<div class="container-fluid">
+    <h2>Yeni Satış Oluştur</h2>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">Satış Listesine Dön</a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Satış Bilgileri</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="ClientId" class="form-label">Müşteri:</label>
+                            <select asp-for="ClientId" asp-items="ViewBag.Clients" class="form-select" required>
+                                <option value="">-- Müşteri Seçin --</option>
+                            </select>
+                            <span asp-validation-for="ClientId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="EmployeeId" class="form-label">Satış Temsilcisi:</label>
+                            <select asp-for="EmployeeId" asp-items="ViewBag.Employees" class="form-select" required>
+                                <option value="">-- Çalışan Seçin --</option>
+                            </select>
+                            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="SalesDate" class="form-label">Satış Tarihi:</label>
+                            <input asp-for="SalesDate" type="date" class="form-control" required />
+                            <span asp-validation-for="SalesDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="Status" class="form-label">Durum:</label>
+                            <select asp-for="Status" class="form-select" required>
+                                <option value="Completed">Tamamlandı</option>
+                                <option value="Processing">İşlemde</option>
+                                <option value="Cancelled">İptal Edildi</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Notes" class="form-label">Notlar:</label>
+                    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+
+                <h5 class="mt-4">Satış Detayları</h5>
+                <hr />
+
+                <div class="alert alert-info">
+                    Satış kaydını oluşturduktan sonra ürün ekleyebilirsiniz.
+                </div>
+
+                <button type="submit" class="btn btn-primary">Satış Kaydı Oluştur</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

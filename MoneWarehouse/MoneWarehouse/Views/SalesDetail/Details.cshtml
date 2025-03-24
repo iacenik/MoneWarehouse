@@ -1,0 +1,74 @@
+﻿@model EntityLayer.Entities.SalesDetail
+
+@{
+    ViewData["Title"] = "Satış Detayı";
+}
+
+<div class="container-fluid">
+    <h2>Satış Detayı</h2>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
+        <a asp-action="Details" asp-controller="Sales" asp-route-id="@Model.SalesId" class="btn btn-info">Satış Detaylarına Dön</a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Satış Detay Bilgileri</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Detay No:</dt>
+                        <dd class="col-sm-8">@Model.Id</dd>
+
+                        <dt class="col-sm-4">Satış No:</dt>
+                        <dd class="col-sm-8">
+                            <a asp-action="Details" asp-controller="Sales" asp-route-id="@Model.SalesId">
+                                @Model.SalesId
+                            </a>
+                        </dd>
+
+                        <dt class="col-sm-4">Ürün Tipi:</dt>
+                        <dd class="col-sm-8">@Model.ProductType</dd>
+
+                        <dt class="col-sm-4">Ürün:</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.ProductType == "Plıntus" && Model.PlıntusStock != null)
+                            {
+                                @Model.PlıntusStock.Name
+                            }
+                            else if (Model.ProductType == "Injection" && Model.InjectionStock != null)
+                            {
+                                @Model.InjectionStock.Name
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Miktar:</dt>
+                        <dd class="col-sm-8">@Model.Quantity</dd>
+
+                        <dt class="col-sm-4">Birim Fiyat:</dt>
+                        <dd class="col-sm-8">@Model.UnitPrice.ToString("N2") ₺</dd>
+
+                        <dt class="col-sm-4">Toplam Tutar:</dt>
+                        <dd class="col-sm-8">@Model.TotalPrice.ToString("N2") ₺</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="btn-group">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Sil</a>
+            </div>
+        </div>
+    </div>
+</div>

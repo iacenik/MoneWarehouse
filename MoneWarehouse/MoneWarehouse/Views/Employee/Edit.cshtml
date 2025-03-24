@@ -1,0 +1,144 @@
+﻿@model EntityLayer.Entities.Employee
+
+@{
+    ViewData["Title"] = "Çalışan Düzenle";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Çalışan Düzenle</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Details" asp-route-id="@Model.EmployeeId" class="btn btn-info btn-sm">
+                    <i class="fas fa-info-circle"></i> Detaylar
+                </a>
+            </div>
+        </div>
+        <form asp-action="Edit" method="post">
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                <input type="hidden" asp-for="EmployeeId" />
+                <input type="hidden" asp-for="CreatedDate" />
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Kişisel Bilgiler</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="FirstName" class="control-label">Ad</label>
+                                    <input asp-for="FirstName" class="form-control" required />
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="LastName" class="control-label">Soyad</label>
+                                    <input asp-for="LastName" class="form-control" required />
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Department" class="control-label">Departman</label>
+                                    <input asp-for="Department" class="form-control" required />
+                                    <span asp-validation-for="Department" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">İletişim Bilgileri</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="Email" class="control-label">E-posta</label>
+                                    <input asp-for="Email" type="email" class="form-control" required />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Phone" class="control-label">Telefon</label>
+                                    <input asp-for="Phone" class="form-control" />
+                                    <span asp-validation-for="Phone" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">İş Bilgileri</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="HireDate" class="control-label">İşe Başlama Tarihi</label>
+                                    <input asp-for="HireDate" type="date" class="form-control" required />
+                                    <span asp-validation-for="HireDate" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="TerminationDate" class="control-label">İşten Ayrılma Tarihi</label>
+                                    <input asp-for="TerminationDate" type="date" class="form-control" />
+                                    <span asp-validation-for="TerminationDate" class="text-danger"></span>
+                                    <small class="form-text text-muted">Çalışan işten ayrıldıysa doldurunuz.</small>
+                                </div>
+                                <div class="form-group form-check">
+                                    <input asp-for="IsActive" class="form-check-input" />
+                                    <label asp-for="IsActive" class="form-check-label">Aktif</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> İptal
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Convert date to the format required by input type="date"
+            function formatDateForInput(dateString) {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return date.toISOString().split('T')[0];
+            }
+
+            // Format dates for the date inputs
+            $("#HireDate").val(formatDateForInput($("#HireDate").val()));
+
+            if ($("#TerminationDate").val()) {
+                $("#TerminationDate").val(formatDateForInput($("#TerminationDate").val()));
+            }
+
+            // Set IsActive to false if TerminationDate is set
+            $("#TerminationDate").change(function() {
+                if ($(this).val()) {
+                    $("#IsActive").prop("checked", false);
+                }
+            });
+
+            // Clear TerminationDate if IsActive is checked
+            $("#IsActive").change(function() {
+                if ($(this).is(":checked")) {
+                    $("#TerminationDate").val("");
+                }
+            });
+        });
+    </script>
+}

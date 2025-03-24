@@ -1,0 +1,141 @@
+﻿@model EntityLayer.Entities.Sales
+
+@{
+    ViewData["Title"] = "Satış Detayları";
+}
+
+<div class="container-fluid">
+    <h2>Satış Detayları</h2>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">Satış Listesine Dön</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a>
+        <a asp-action="AddDetail" asp-route-id="@Model.Id" class="btn btn-success">Yeni Ürün Ekle</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Satış Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Satış No:</dt>
+                        <dd class="col-sm-8">@Model.Id</dd>
+
+                        <dt class="col-sm-4">Müşteri:</dt>
+                        <dd class="col-sm-8">@(Model.Client?.CompanyName ?? "-")</dd>
+
+                        <dt class="col-sm-4">Temsilci:</dt>
+                        <dd class="col-sm-8">@(Model.Employee?.FirstName + " " + Model.Employee?.LastName ?? "-")</dd>
+
+                        <dt class="col-sm-4">Satış Tarihi:</dt>
+                        <dd class="col-sm-8">@Model.SalesDate.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-4">Durum:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-@(Model.Status == "Completed" ? "success" :
+                                      Model.Status == "Processing" ? "warning" :
+                                      Model.Status == "Cancelled" ? "danger" : "info")">
+                                @Model.Status
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Toplam Tutar:</dt>
+                        <dd class="col-sm-8">@Model.TotalAmount.ToString("N2") ₺</dd>
+
+                        <dt class="col-sm-4">Notlar:</dt>
+                        <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.Notes) ? "-" : Model.Notes)</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Ürün Detayları</h5>
+                    <span class="badge bg-primary">@(Model.SalesDetails?.Count() ?? 0) Ürün</span>
+                </div>
+                <div class="card-body">
+                    @if (Model.SalesDetails != null && Model.SalesDetails.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Ürün Tipi</th>
+                                        <th>Ürün</th>
+                                        <th>Miktar</th>
+                                        <th>Birim Fiyat</th>
+                                        <th>Toplam</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var detail in Model.SalesDetails)
+                                    {
+                                        <tr>
+                                            <td>@detail.ProductType</td>
+                                            <td>
+                                                @if (detail.ProductType == "Plıntus" && detail.PlıntusStock != null)
+                                                {
+                                                    @detail.PlıntusStock.Name
+                                                }
+                                                else if (detail.ProductType == "Injection" && detail.InjectionStock != null)
+                                                {
+                                                    @detail.InjectionStock.Name
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+                                            </td>
+                                            <td>@detail.Quantity</td>
+                                            <td>@detail.UnitPrice.ToString("N2") ₺</td>
+                                            <td>@detail.TotalPrice.ToString("N2") ₺</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a asp-action="EditDetail" asp-route-id="@detail.Id" class="btn btn-sm btn-primary">Düzenle</a>
+                                                    <a asp-action="DeleteDetail" asp-route-id="@detail.Id" class="btn btn-sm btn-danger">Sil</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="4" class="text-end">Toplam:</th>
+                                        <th>@Model.TotalAmount.ToString("N2") ₺</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            Bu satışa ait ürün detayı bulunamadı.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

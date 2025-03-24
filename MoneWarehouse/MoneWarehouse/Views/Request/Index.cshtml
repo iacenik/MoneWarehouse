@@ -1,0 +1,149 @@
+﻿@model IEnumerable<EntityLayer.Entities.Request>
+
+@{
+    ViewData["Title"] = "Talepler";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center py-3">
+                    <h3 class="m-0 font-weight-bold">Talepler</h3>
+                    <div>
+                        <a asp-action="Create" class="btn btn-light">
+                            <i class="fas fa-plus-circle me-1"></i> Yeni Talep
+                        </a>
+                        <div class="btn-group ms-2">
+                            <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-filter me-1"></i> Filtrele
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-action="ByStatus">Duruma Göre</a></li>
+                                <li><a class="dropdown-item" asp-action="ByPriority">Önceliğe Göre</a></li>
+                                <li><a class="dropdown-item" asp-action="ByEmployee">Çalışana Göre</a></li>
+                                <li><a class="dropdown-item" asp-action="ByDateRange">Tarih Aralığına Göre</a></li>
+                            </ul>
+                        </div>
+                        <a asp-action="Dashboard" class="btn btn-light ms-2">
+                            <i class="fas fa-chart-pie me-1"></i> Gösterge Paneli
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <div class="table-responsive p-0">
+                        <table class="table table-hover align-items-center mb-0">
+                            <thead>
+                                <tr class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    <th class="ps-3">Talep No</th>
+                                    <th>Çalışan</th>
+                                    <th>Tür</th>
+                                    <th>Durum</th>
+                                    <th>Öncelik</th>
+                                    <th>Oluşturma Tarihi</th>
+                                    <th>Son Tarih</th>
+                                    <th>Atanan</th>
+                                    <th class="text-center">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="ps-3">
+                                            <p class="text-xs font-weight-bold mb-0">@item.RequestNumber</p>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-xs">@item.Employee.EmployeeName</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs text-secondary mb-0">@(string.IsNullOrEmpty(item.RequestType) ? "-" : item.RequestType)</p>
+                                        </td>
+                                        <td>
+                                            @{
+                                                string statusBadgeClass = item.Status switch
+                                                {
+                                                    "Pending" => "bg-warning",
+                                                    "In Progress" => "bg-info",
+                                                    "Completed" => "bg-success",
+                                                    "Cancelled" => "bg-danger",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge badge-sm @statusBadgeClass">@item.Status</span>
+                                        </td>
+                                        <td>
+                                            @{
+                                                string priorityBadgeClass = item.Priority switch
+                                                {
+                                                    "Low" => "bg-info",
+                                                    "Normal" => "bg-success",
+                                                    "High" => "bg-warning",
+                                                    "Urgent" => "bg-danger",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge badge-sm @priorityBadgeClass">@item.Priority</span>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs text-secondary mb-0">@item.CreatedDate.ToString("dd.MM.yyyy")</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs text-secondary mb-0">@(item.DueDate.HasValue ? item.DueDate.Value.ToString("dd.MM.yyyy") : "-")</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs text-secondary mb-0">@(string.IsNullOrEmpty(item.AssignedTo) ? "-" : item.AssignedTo)</p>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="btn-group">
+                                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Auto-dismiss alerts after 5 seconds
+            setTimeout(function () {
+                $('.alert').alert('close');
+            }, 5000);
+        });
+    </script>
+}

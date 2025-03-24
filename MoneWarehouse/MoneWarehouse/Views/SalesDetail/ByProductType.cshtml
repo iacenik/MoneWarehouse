@@ -1,0 +1,46 @@
+﻿@model IEnumerable<EntityLayer.Entities.SalesDetail>
+
+@{
+    ViewData["Title"] = "Ürün Tipine Göre Satış Detayları";
+}
+
+<div class="container-fluid">
+    <h2>Ürün Tipine Göre Satış Detayları</h2>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">Tüm Detaylara Dön</a>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Ürün Tipi Seçin</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="ByProductType" method="post">
+                @Html.AntiForgeryToken()
+                <div class="row align-items-end">
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label for="productType" class="form-label">Ürün Tipi:</label>
+                            <select id="productType" name="productType" class="form-select" required>
+                                <option value="">-- Ürün Tipi Seçin --</option>
+                                <option value="Plıntus">Plıntus</option>
+                                <option value="Injection">Enjeksiyon</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary mb-3">Filtrele</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

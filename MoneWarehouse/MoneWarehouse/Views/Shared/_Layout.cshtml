@@ -1,49 +1,123 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
+
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MoneWarehouse</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MoneWarehouse.styles.css" asp-append-version="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Mone Panel</title>
+
+    <link rel="icon" href="~/img/favicon.ico" type="image/x-icon">
+
+    <!-- Google Font -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Admin/plugins/fontawesome-free/css/all.min.css">
+    <!-- AdminLTE -->
+    <link rel="stylesheet" href="~/Admin/dist/css/adminlte.min.css">
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MoneWarehouse</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="/" class="nav-link">Ana Sayfa</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ml-auto">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <span class="nav-link">Merhaba @User.Identity.Name!</span>
+                    </li>
+                    <li class="nav-item">
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Çıkış Yap</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </nav>
+
+        <!-- Sidebar -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <a href="/" class="brand-link">
+                <img src="~/img/mone-plint.png" alt="Mone Logo"
+                     class="brand-image" style="opacity:1; max-height:45px; margin-left:0.2rem;">
+                <span class="brand-text font-weight-light" style="color: #e67e22;">Mone Panel</span>
+            </a>
+
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a href="/Stock" class="nav-link">
+                                <i class="nav-icon fas fa-boxes"></i>
+                                <p>Stok Yönetimi</p>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a href="/Request" class="nav-link">
+                                <i class="nav-icon fas fa-clipboard-list"></i>
+                                <p>Talepler</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Sales" class="nav-link">
+                                <i class="nav-icon fas fa-shopping-cart"></i>
+                                <p>Satışlar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Client" class="nav-link">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>Müşteriler</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Employee" class="nav-link">
+                                <i class="nav-icon fas fa-user-tie"></i>
+                                <p>Çalışanlar</p>
+                            </a>
                         </li>
                     </ul>
-                </div>
+                </nav>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        </aside>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <h1 class="text-dark">@ViewData["Title"]</h1>
+                </div>
+            </section>
+
+            <section class="content">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="main-footer text-center">
+            <strong>&copy; @DateTime.Now.Year <a href="#">Mone Panel</a></strong> | Tüm Hakları Saklıdır.
+        </footer>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - MoneWarehouse - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Scripts -->
+    <script src="~/Admin/plugins/jquery/jquery.min.js"></script>
+    <script src="~/Admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Admin/dist/js/adminlte.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

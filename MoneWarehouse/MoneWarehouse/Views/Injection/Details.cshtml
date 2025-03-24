@@ -1,0 +1,189 @@
+﻿@model EntityLayer.Entities.Injection
+
+@{
+    ViewData["Title"] = "Enjeksiyon Detayları";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Enjeksiyon Detayları</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.InjectionId" class="btn btn-primary btn-sm">
+                    <i class="fas fa-edit"></i> Düzenle
+                </a>
+                <a asp-controller="InjectionDaily" asp-action="Create" asp-route-injectionId="@Model.InjectionId" class="btn btn-success btn-sm">
+                    <i class="fas fa-plus"></i> Yeni Günlük Kayıt
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Enjeksiyon Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th>Enjeksiyon ID</th>
+                                    <td>@Model.InjectionId</td>
+                                </tr>
+                                <tr>
+                                    <th>Boyut ID</th>
+                                    <td>
+                                        <a asp-action="BySize" asp-route-sizeId="@Model.SizeId" class="badge badge-info">
+                                            @Model.SizeId
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Kod ID</th>
+                                    <td>
+                                        <a asp-action="ByCode" asp-route-codeId="@Model.CodeId" class="badge badge-primary">
+                                            @Model.CodeId
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Hızlı İşlemler</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <a asp-controller="InjectionDaily" asp-action="Create" asp-route-injectionId="@Model.InjectionId" class="btn btn-success btn-block">
+                                        <i class="fas fa-plus-circle"></i> Yeni Günlük Kayıt
+                                    </a>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <a asp-controller="InjectionStock" asp-action="Index" class="btn btn-info btn-block">
+                                        <i class="fas fa-boxes"></i> Stok Durumu
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a asp-action="Edit" asp-route-id="@Model.InjectionId" class="btn btn-primary btn-block">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a asp-action="Delete" asp-route-id="@Model.InjectionId" class="btn btn-danger btn-block">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Günlük Üretim Kayıtları</h6>
+                            <a asp-controller="InjectionDaily" asp-action="Create" asp-route-injectionId="@Model.InjectionId" class="btn btn-sm btn-success">
+                                <i class="fas fa-plus"></i> Yeni Kayıt
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            @if (Model.InjectionDailyEntries != null && Model.InjectionDailyEntries.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="dailyEntriesTable" width="100%" cellspacing="0">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Tarih</th>
+                                                <th>Miktar</th>
+                                                <th>Çalışan</th>
+                                                <th>İşlemler</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var entry in Model.InjectionDailyEntries.OrderByDescending(e => e.Date))
+                                            {
+                                                <tr>
+                                                    <td>@entry.Date.ToString("dd.MM.yyyy")</td>
+                                                    <td>@entry.Quantity</td>
+                                                    <td>@entry.EmployeeId</td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <a asp-controller="InjectionDaily" asp-action="Details" asp-route-id="@entry.Id" class="btn btn-info btn-sm" data-toggle="tooltip" title="Detaylar">
+                                                                <i class="fas fa-info-circle"></i>
+                                                            </a>
+                                                            <a asp-controller="InjectionDaily" asp-action="Edit" asp-route-id="@entry.Id" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Düzenle">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <a asp-controller="InjectionDaily" asp-action="Delete" asp-route-id="@entry.Id" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Sil">
+                                                                <i class="fas fa-trash"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info text-center">
+                                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                                    <p class="mb-0">Bu enjeksiyon için günlük üretim kaydı bulunmamaktadır.</p>
+                                    <a asp-controller="InjectionDaily" asp-action="Create" asp-route-injectionId="@Model.InjectionId" class="btn btn-success mt-3">
+                                        <i class="fas fa-plus"></i> Yeni Günlük Kayıt Oluştur
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#dailyEntriesTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json'
+                },
+                "order": [[0, "desc"]],
+                "pageLength": 10
+            });
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

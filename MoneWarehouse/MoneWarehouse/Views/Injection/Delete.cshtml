@@ -1,0 +1,88 @@
+﻿@model EntityLayer.Entities.Injection
+
+@{
+    ViewData["Title"] = "Enjeksiyon Sil";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Enjeksiyon Silme Onayı</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Listeye Dön
+                </a>
+                <a asp-action="Details" asp-route-id="@Model.InjectionId" class="btn btn-info btn-sm">
+                    <i class="fas fa-info-circle"></i> Detaylar
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h5><i class="fas fa-exclamation-triangle"></i> Uyarı!</h5>
+                <p>Enjeksiyon ID: <strong>@Model.InjectionId</strong> numaralı ürünü silmek üzeresiniz. Bu işlem geri alınamaz!</p>
+                <p>Eğer bu enjeksiyon ürünü ile ilişkili günlük üretim kayıtları varsa, silme işlemi başarısız olacaktır.</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                    <div class="card mb-4 border-left-danger">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Enjeksiyon Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th>Enjeksiyon ID</th>
+                                    <td>@Model.InjectionId</td>
+                                </tr>
+                                <tr>
+                                    <th>Boyut ID</th>
+                                    <td>
+                                        <a asp-action="BySize" asp-route-sizeId="@Model.SizeId" class="badge badge-info">
+                                            @Model.SizeId
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Kod ID</th>
+                                    <td>
+                                        <a asp-action="ByCode" asp-route-codeId="@Model.CodeId" class="badge badge-primary">
+                                            @Model.CodeId
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Günlük Kayıt Durumu</th>
+                                    <td>
+                                        @if (Model.InjectionDailyEntries != null && Model.InjectionDailyEntries.Any())
+                                        {
+                                            <span class="badge badge-warning">@Model.InjectionDailyEntries.Count() adet günlük kayıt mevcut</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success">Günlük kayıt yok</span>
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="InjectionId" />
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Sil
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> İptal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

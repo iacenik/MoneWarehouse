@@ -1,0 +1,56 @@
+﻿@model EntityLayer.Entities.Size
+
+@{
+    ViewData["Title"] = "Boyut Sil";
+}
+
+<div class="container-fluid">
+    <h2>Boyut Sil</h2>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">Boyut Listesine Dön</a>
+    </div>
+
+    <div class="alert alert-danger">
+        <h4>Bu boyutu silmek istediğinizden emin misiniz?</h4>
+        <p>Bu işlem geri alınamaz. Eğer bu boyutla ilişkili kodlar, enjeksiyon ürünleri veya plıntus ürünleri varsa, silme işlemi başarısız olacaktır.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Silinecek Boyut Bilgileri</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@Model.SizeId</dd>
+
+                <dt class="col-sm-3">Boyut Adı:</dt>
+                <dd class="col-sm-9">@Model.SizeName</dd>
+
+                <dt class="col-sm-3">Boyut Tipi:</dt>
+                <dd class="col-sm-9">@Model.SizeType</dd>
+
+                <dt class="col-sm-3">Açıklama:</dt>
+                <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Description) ? "-" : Model.Description)</dd>
+
+                <dt class="col-sm-3">Durum:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-@(Model.IsActive ? "success" : "danger")">
+                        @(Model.IsActive ? "Aktif" : "Pasif")
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">Oluşturulma Tarihi:</dt>
+                <dd class="col-sm-9">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</dd>
+            </dl>
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.SizeId" />
+                <button type="submit" class="btn btn-danger">Sil</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">İptal</a>
+            </form>
+        </div>
+    </div>
+</div>

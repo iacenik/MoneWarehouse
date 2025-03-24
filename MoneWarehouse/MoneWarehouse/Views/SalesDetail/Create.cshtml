@@ -1,0 +1,110 @@
+﻿@model EntityLayer.Entities.SalesDetail
+
+@{
+    ViewData["Title"] = "Yeni Satış Detayı";
+}
+
+<div class="container-fluid">
+    <h2>Yeni Satış Detayı Ekle</h2>
+
+    <div class="mb-3">
+        <a asp-controller="Sales" asp-action="Details" asp-route-id="@ViewBag.SalesId" class="btn btn-secondary">Satışa Dön</a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Ürün Bilgileri</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="SalesId" value="@ViewBag.SalesId" />
+
+                <div class="form-group mb-3">
+                    <label asp-for="ProductType" class="form-label">Ürün Tipi:</label>
+                    <select asp-for="ProductType" class="form-select" id="productType" required onchange="toggleProductSelection()">
+                        <option value="">-- Ürün Tipi Seçin --</option>
+                        <option value="Plıntus">Plıntus</option>
+                        <option value="Injection">Enjeksiyon</option>
+                    </select>
+                    <span asp-validation-for="ProductType" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3" id="plintusDiv" style="display: none;">
+                    <label asp-for="PlıntusStockId" class="form-label">Plıntus Ürünü:</label>
+                    <select asp-for="PlıntusStockId" asp-items="ViewBag.PlintusStocks" class="form-select" id="plintusSelect">
+                        <option value="">-- Ürün Seçin --</option>
+                    </select>
+                    <span asp-validation-for="PlıntusStockId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3" id="injectionDiv" style="display: none;">
+                    <label asp-for="InjectionStockId" class="form-label">Enjeksiyon Ürünü:</label>
+                    <select asp-for="InjectionStockId" asp-items="ViewBag.InjectionStocks" class="form-select" id="injectionSelect">
+                        <option value="">-- Ürün Seçin --</option>
+                    </select>
+                    <span asp-validation-for="InjectionStockId" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="Quantity" class="form-label">Miktar:</label>
+                            <input asp-for="Quantity" class="form-control" type="number" min="1" required />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="UnitPrice" class="form-label">Birim Fiyat (₺):</label>
+                            <input asp-for="UnitPrice" class="form-control" type="number" step="0.01" min="0" required />
+                            <span asp-validation-for="UnitPrice" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Ekle</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function toggleProductSelection() {
+            const productType = document.getElementById('productType').value;
+            const plintusDiv = document.getElementById('plintusDiv');
+            const injectionDiv = document.getElementById('injectionDiv');
+            const plintusSelect = document.getElementById('plintusSelect');
+            const injectionSelect = document.getElementById('injectionSelect');
+
+            if (productType === 'Plıntus') {
+                plintusDiv.style.display = 'block';
+                injectionDiv.style.display = 'none';
+                plintusSelect.required = true;
+                injectionSelect.required = false;
+                injectionSelect.value = '';
+            } else if (productType === 'Injection') {
+                plintusDiv.style.display = 'none';
+                injectionDiv.style.display = 'block';
+                plintusSelect.required = false;
+                injectionSelect.required = true;
+                plintusSelect.value = '';
+            } else {
+                plintusDiv.style.display = 'none';
+                injectionDiv.style.display = 'none';
+                plintusSelect.required = false;
+                injectionSelect.required = false;
+            }
+        }
+
+        // Sayfa yüklendiğinde de çalıştır
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleProductSelection();
+        });
+    </script>
+}

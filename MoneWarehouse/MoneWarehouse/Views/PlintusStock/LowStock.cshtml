@@ -1,0 +1,151 @@
+﻿@model IEnumerable<EntityLayer.Entities.PlıntusStock>
+
+@{
+    ViewData["Title"] = "Düşük Stok Raporu";
+    int threshold = ViewBag.Threshold;
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-primary">Düşük Stok Raporu</h4>
+            <a asp-action="Index" class="btn btn-secondary rounded-pill px-3">
+                <i class="fas fa-arrow-left me-1"></i> Stok Listesine Dön
+            </a>
+        </div>
+        <div class="card-body">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-1"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle me-1"></i> Şu anda <strong>@threshold</strong> adet veya daha az stoğu olan ürünler listeleniyor.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <form asp-action="LowStock" method="get" class="row g-3">
+                        <div class="col-md-8">
+                            <div class="form-floating">
+                                <input type="number" name="threshold" id="threshold" class="form-control" min="1" value="@threshold" required />
+                                <label for="threshold">Eşik Değeri</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-filter me-1"></i> Filtrele
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table id="lowStockDataTable" class="table table-hover table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Kod</th>
+                                <th>İsim</th>
+                                <th>Miktar</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Code</td>
+                                    <td>@item.Name</td>
+                                    <td class="text-end">@item.Quantity</td>
+                                    <td>
+                                        @if (item.Quantity <= 5)
+                                        {
+                                            <span class="badge bg-danger" data-toggle="tooltip" title="Acil sipariş gerekli!">Kritik Seviye</span>
+                                        }
+                                        else if (item.Quantity <= 20)
+                                        {
+                                            <span class="badge bg-warning text-dark" data-toggle="tooltip" title="Sipariş planlaması yapılmalı">Düşük Stok</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success" data-toggle="tooltip" title="Stok seviyesi yeterli">Yeterli</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" data-toggle="tooltip" title="Detaylar">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                            <a asp-action="ManageStock" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success" data-toggle="tooltip" title="Stok Ekle">
+                                                <i class="fas fa-plus-circle"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="m-0"><i class="fas fa-chart-pie me-1"></i> Düşük Stok Özeti</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="display-4 font-weight-bold">@Model.Count()</div>
+                                <p>Toplam Düşük Stok Sayısı</p>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="display-4 font-weight-bold text-danger">@Model.Count(x => x.Quantity <= 5)</div>
+                                <p>Kritik Seviyede Stok</p>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="display-4 font-weight-bold">@Model.Sum(x => x.Quantity)</div>
+                                <p>Toplam Ürün Miktarı</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center" role="alert">
+                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                    <h5>Düşük stok bulunamadı!</h5>
+                    <p class="mb-0">Şu anda @threshold adet veya daha az miktara sahip stok bulunmamaktadır.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#lowStockDataTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json'
+                },
+                "order": [[3, "asc"]],
+                "pageLength": 25
+            });
+            $('[data-toggle="tooltip"]').tooltip();
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
+        });
+    </script>
+}

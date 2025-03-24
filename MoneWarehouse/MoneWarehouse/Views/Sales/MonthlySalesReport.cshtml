@@ -1,0 +1,190 @@
+﻿@model Dictionary<string, decimal>
+
+@{
+    ViewData["Title"] = "Aylık Satış Raporu";
+}
+
+<div class="container-fluid">
+    <h2>Aylık Satış Raporu - @ViewBag.Year</h2>
+
+    <div class="mb-3">
+        <a asp-action="Reports" class="btn btn-secondary">Raporlara Dön</a>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Yıl Seçin</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="MonthlySalesReport" method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="year" class="form-label">Yıl:</label>
+                    <select id="year" name="year" class="form-select">
+                        @{
+                            int currentYear = DateTime.Now.Year;
+                            for (int year = currentYear; year >= 2020; year--)
+                            {
+                                if (ViewBag.Year == year)
+                                {
+                                    <option value="@year" selected>@year</option>
+                                }
+                                else
+                                {
+                                    <option value="@year">@year</option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Göster</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>@ViewBag.Year Yılı Aylık Satış Grafiği</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="monthlySalesChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Aylık Satış Tutarları</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Ay</th>
+                                        <th class="text-end">Satış Tutarı</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        decimal totalAmount = 0;
+
+                                        // Ayları doğru sırayla göstermek için
+                                        var monthNames = new[] { "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+                                "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" };
+
+                                        foreach (var monthName in monthNames)
+                                        {
+                                            decimal monthAmount = Model.ContainsKey(monthName) ? Model[monthName] : 0;
+                                            totalAmount += monthAmount;
+
+                                            <tr>
+                                                <td>@monthName</td>
+                                                <td class="text-end">@monthAmount.ToString("N2") ₺</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-primary">
+                                        <th>Toplam</th>
+                                        <th class="text-end">@totalAmount.ToString("N2") ₺</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Seçilen yıl için herhangi bir satış verisi bulunamadı.
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('monthlySalesChart');
+
+            if (ctx) {
+                // Ayları doğru sırayla almak için
+                var monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+                               "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+
+                var monthData = [];
+
+        @foreach (var month in Model)
+        {
+            <text>
+                        var monthIndex = monthNames.indexOf('@month.Key');
+                        if (monthIndex !== -1) {
+                            monthData[monthIndex] = @month.Value.ToString("F2").Replace(",", ".");
+                        }
+            </text>
+        }
+
+                // Eksik aylar için 0 değerini ata
+                for (var i = 0; i < 12; i++) {
+                    if (!monthData[i]) {
+                        monthData[i] = 0;
+                    }
+                }
+
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: monthNames,
+                        datasets: [{
+                            label: '@ViewBag.Year Satış Tutarı (₺)',
+                            data: monthData,
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value.toLocaleString('tr-TR') + ' ₺';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' +
+                                               context.parsed.y.toLocaleString('tr-TR') + ' ₺';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

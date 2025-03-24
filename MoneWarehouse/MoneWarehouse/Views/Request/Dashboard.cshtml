@@ -1,0 +1,319 @@
+﻿@model IEnumerable<EntityLayer.Entities.Request>
+
+@{
+    ViewData["Title"] = "Gösterge Paneli";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card bg-gradient-primary text-white shadow">
+                <div class="card-body py-4">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h2 class="mb-1 text-white">Talep Yönetimi Gösterge Paneli</h2>
+                            <p class="mb-0 text-sm opacity-8">Talep durumlarını, öncelikleri ve performans metriklerini buradan takip edebilirsiniz.</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a asp-action="Index" class="btn btn-outline-light">
+                                <i class="fas fa-list me-1"></i> Talep Listesi
+                            </a>
+                            <a asp-action="Create" class="btn btn-light ms-2">
+                                <i class="fas fa-plus-circle me-1"></i> Yeni Talep
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Cards -->
+    <div class="row">
+        @{
+            var statusCounts = ViewBag.StatusCounts;
+            var totalRequests = Model.Count();
+            var pendingCount = statusCounts.ContainsKey("Pending") ? statusCounts["Pending"] : 0;
+            var inProgressCount = statusCounts.ContainsKey("In Progress") ? statusCounts["In Progress"] : 0;
+            var completedCount = statusCounts.ContainsKey("Completed") ? statusCounts["Completed"] : 0;
+            var cancelledCount = statusCounts.ContainsKey("Cancelled") ? statusCounts["Cancelled"] : 0;
+        }
+
+        <div class="col-xl-3 col-sm-6 mb-4">
+            <div class="card shadow">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Toplam Talep</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    @totalRequests
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                                <i class="fas fa-clipboard text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6 mb-4">
+            <div class="card shadow">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Bekleyen</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    @pendingCount
+                                    <span class="text-success text-sm font-weight-bolder">@(Math.Round((double)pendingCount / (totalRequests > 0 ? totalRequests : 1) * 100))%</span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                                <i class="fas fa-hourglass-half text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6 mb-4">
+            <div class="card shadow">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Devam Eden</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    @inProgressCount
+                                    <span class="text-success text-sm font-weight-bolder">@(Math.Round((double)inProgressCount / (totalRequests > 0 ? totalRequests : 1) * 100))%</span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
+                                <i class="fas fa-cogs text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6 mb-4">
+            <div class="card shadow">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Tamamlanan</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    @completedCount
+                                    <span class="text-success text-sm font-weight-bolder">@(Math.Round((double)completedCount / (totalRequests > 0 ? totalRequests : 1) * 100))%</span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                                <i class="fas fa-check text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts and Tables -->
+    <div class="row">
+        <!-- Status Distribution Chart -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow">
+                <div class="card-header p-3">
+                    <h6 class="mb-0">Talep Durumları Dağılımı</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart">
+                        <canvas id="statusChart" class="chart-canvas" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Priority Distribution Chart -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow">
+                <div class="card-header p-3">
+                    <h6 class="mb-0">Taleplerin Öncelik Dağılımı</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart">
+                        <canvas id="priorityChart" class="chart-canvas" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Requests -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4 shadow">
+                <div class="card-header p-3">
+                    <div class="row">
+                        <div class="col-6 d-flex align-items-center">
+                            <h6 class="mb-0">Son Talepler</h6>
+                        </div>
+                        <div class="col-6 text-end">
+                            <a asp-action="Index" class="btn btn-outline-primary btn-sm">Tümünü Görüntüle</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Talep No</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Çalışan</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Durum</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Öncelik</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Oluşturma Tarihi</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderByDescending(r => r.CreatedDate).Take(5))
+                                {
+                                    <tr>
+                                        <td class="ps-3">
+                                            <p class="text-xs font-weight-bold mb-0">@item.RequestNumber</p>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-xs">@item.Employee.EmployeeName</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @{
+                                                string statusBadgeClass = item.Status switch
+                                                {
+                                                    "Pending" => "bg-warning",
+                                                    "In Progress" => "bg-info", 
+                                                    "Completed" => "bg-success",
+                                                    "Cancelled" => "bg-danger",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge badge-sm @statusBadgeClass">@item.Status</span>
+                                        </td>
+                                        <td>
+                                            @{
+                                                string priorityBadgeClass = item.Priority switch
+                                                {
+                                                    "Low" => "bg-info",
+                                                    "Normal" => "bg-success",
+                                                    "High" => "bg-warning",
+                                                    "Urgent" => "bg-danger",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge badge-sm @priorityBadgeClass">@item.Priority</span>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs text-secondary mb-0">@item.CreatedDate.ToString("dd.MM.yyyy")</p>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Status Chart
+        var statusCtx = document.getElementById('statusChart').getContext('2d');
+        var statusChart = new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Bekleyen', 'Devam Eden', 'Tamamlanan', 'İptal Edilmiş'],
+                datasets: [{
+                    data: [@pendingCount, @inProgressCount, @completedCount, @cancelledCount],
+                    backgroundColor: [
+                        '#ffc107',
+                        '#17a2b8',
+                        '#28a745',
+                        '#dc3545'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+
+        // Priority Chart
+        var priorityData = @Html.Raw(Json.Serialize(Model.GroupBy(r => r.Priority)
+                            .Select(g => new { priority = g.Key, count = g.Count() })
+                            .OrderBy(x => x.priority)));
+
+        var priorityCtx = document.getElementById('priorityChart').getContext('2d');
+        var priorityChart = new Chart(priorityCtx, {
+            type: 'bar',
+            data: {
+                labels: priorityData.map(x => x.priority),
+                datasets: [{
+                    label: 'Talep Sayısı',
+                    data: priorityData.map(x => x.count),
+                    backgroundColor: [
+                        '#17a2b8',  // Low
+                        '#28a745',  // Normal
+                        '#ffc107',  // High
+                        '#dc3545'   // Urgent
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

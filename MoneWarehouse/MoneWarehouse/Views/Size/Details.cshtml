@@ -1,0 +1,76 @@
+﻿@model EntityLayer.Entities.Size
+
+@{
+    ViewData["Title"] = "Boyut Detayları";
+}
+
+<div class="container-fluid">
+    <h2>Boyut Detayları</h2>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">Boyut Listesine Dön</a>
+        <a asp-action="Edit" asp-route-id="@Model.SizeId" class="btn btn-primary">Düzenle</a>
+        <a asp-action="WithCodes" asp-route-id="@Model.SizeId" class="btn btn-info">İlişkili Kodlar</a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>@Model.SizeName</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">ID:</dt>
+                        <dd class="col-sm-8">@Model.SizeId</dd>
+
+                        <dt class="col-sm-4">Boyut Adı:</dt>
+                        <dd class="col-sm-8">@Model.SizeName</dd>
+
+                        <dt class="col-sm-4">Boyut Tipi:</dt>
+                        <dd class="col-sm-8">@Model.SizeType</dd>
+
+                        <dt class="col-sm-4">Açıklama:</dt>
+                        <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.Description) ? "-" : Model.Description)</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Durum:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-@(Model.IsActive ? "success" : "danger")">
+                                @(Model.IsActive ? "Aktif" : "Pasif")
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Oluşturulma Tarihi:</dt>
+                        <dd class="col-sm-8">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                        <dt class="col-sm-4">Güncellenme Tarihi:</dt>
+                        <dd class="col-sm-8">@(Model.UpdatedDate.HasValue ? Model.UpdatedDate.Value.ToString("dd/MM/yyyy HH:mm") : "-")</dd>
+
+                        <dt class="col-sm-4">İlişkili Kod Sayısı:</dt>
+                        <dd class="col-sm-8">@(Model.Codes != null ? Model.Codes.Count : 0)</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="btn-group">
+                @if (Model.IsActive)
+                {
+                    <form asp-action="Deactivate" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.SizeId" />
+                        <button type="submit" class="btn btn-warning" onclick="return confirm('Bu boyutu deaktif etmek istediğinizden emin misiniz?')">Deaktif Et</button>
+                    </form>
+                }
+                <form asp-action="Delete" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.SizeId" />
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Bu boyutu silmek istediğinizden emin misiniz?')">Sil</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

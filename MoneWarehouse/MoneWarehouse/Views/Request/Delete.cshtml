@@ -1,0 +1,115 @@
+﻿@model EntityLayer.Entities.Request
+
+@{
+    ViewData["Title"] = "Talep Sil";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-gradient-danger text-white d-flex justify-content-between align-items-center py-3">
+                    <h3 class="m-0 font-weight-bold">Talep Sil</h3>
+                    <a asp-action="Index" class="btn btn-light">
+                        <i class="fas fa-arrow-left me-1"></i> Listeye Dön
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger mb-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i> Bu talebi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="mb-3 border-bottom pb-2">Talep Bilgileri</h4>
+
+                            <div class="mb-3">
+                                <span class="text-sm text-secondary">Talep Numarası:</span>
+                                <h5>@Model.RequestNumber</h5>
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="text-sm text-secondary">Çalışan:</span>
+                                <h5>@Model.Employee.EmployeeName</h5>
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="text-sm text-secondary">Oluşturma Tarihi:</span>
+                                <h5>@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</h5>
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="text-sm text-secondary">Talep Türü:</span>
+                                <h5>@(string.IsNullOrEmpty(Model.RequestType) ? "-" : Model.RequestType)</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h4 class="mb-3 border-bottom pb-2">Durum Bilgileri</h4>
+
+                            <div class="mb-3">
+                                <span class="text-sm text-secondary">Durum:</span>
+                                @{
+                                    string statusBadgeClass = Model.Status switch
+                                    {
+                                        "Pending" => "bg-warning",
+                                        "In Progress" => "bg-info",
+                                        "Completed" => "bg-success",
+                                        "Cancelled" => "bg-danger",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <h5><span class="badge @statusBadgeClass">@Model.Status</span></h5>
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="text-sm text-secondary">Öncelik:</span>
+                                @{
+                                    string priorityBadgeClass = Model.Priority switch
+                                    {
+                                        "Low" => "bg-info",
+                                        "Normal" => "bg-success",
+                                        "High" => "bg-warning",
+                                        "Urgent" => "bg-danger",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <h5><span class="badge @priorityBadgeClass">@Model.Priority</span></h5>
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="text-sm text-secondary">Atanan Kişi:</span>
+                                <h5>@(string.IsNullOrEmpty(Model.AssignedTo) ? "-" : Model.AssignedTo)</h5>
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="text-sm text-secondary">Son Tarih:</span>
+                                <h5>@(Model.DueDate.HasValue ? Model.DueDate.Value.ToString("dd.MM.yyyy") : "-")</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-3">
+                            <div class="d-flex flex-column">
+                                <span class="text-sm text-secondary">Açıklama:</span>
+                                <p class="mb-0">@(string.IsNullOrEmpty(Model.Description) ? "-" : Model.Description)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i> İptal
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i> Talebi Sil
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
